@@ -18,7 +18,7 @@ cd arrow/
 git submodule update --init --recursive
 
 mkdir -p cpp/release
-cp cpp/release
+cd cpp/release
 
 cmake -DARROW_PARQUET=ON \
   -DARROW_WITH_SNAPPY=ON \
