@@ -14,21 +14,27 @@
 	</properties>
 
 	<dependencies>
-		<!-- tag::joda[] -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>2.9.2</version>
-		</dependency>
-		<!-- end::joda[] -->
-		<!-- tag::junit[] -->
+	<dependency>
+		<groupId>org.apache.arrow</groupId>
+		<artifactId>arrow-dataset</artifactId>
+		<version>6.0.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.arrow</groupId>
+		<artifactId>arrow-memory</artifactId>
+		<version>6.0.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.arrow</groupId>
+		<artifactId>arrow-vector</artifactId>
+		<version>6.0.0</version>
+	</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- end::junit[] -->
 	</dependencies>
 
 	<build>
