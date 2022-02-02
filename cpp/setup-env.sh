@@ -27,8 +27,6 @@ cmake -DARROW_PARQUET=ON \
   -DPARQUET_BUILD_EXAMPLES=ON \
   -DARROW_PYTHON=ON \
   -DARROW_ORC=ON \
-  -DARROW_JAVA=ON \
-  -DARROW_JNI=ON \
   -DARROW_DATASET=ON \
   -DARROW_CSV=ON \
   -DARROW_WITH_LZ4=ON \
@@ -36,13 +34,3 @@ cmake -DARROW_PARQUET=ON \
   ..
 
 make -j4 install
-
-cd ../../
-
-mkdir -p arrow/java/dist
-cp -r arrow/cpp/release/release/libarrow_dataset_jni.so* arrow/java/dist
-
-mvn="mvn -B -DskipTests -Dcheckstyle.skip -Drat.skip=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
-mvn="${mvn} -T 2C"
-cd arrow/java
-${mvn} clean install package -P arrow-jni -pl dataset,format,memory,vector -am -Darrow.cpp.build.dir=arrow/cpp/release/release
