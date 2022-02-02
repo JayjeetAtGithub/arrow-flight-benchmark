@@ -13,9 +13,14 @@ apt install -y python3 \
                default-jdk \
                maven
 
-git clone https://github.com/apache/arrow
-cd arrow/
-git submodule update --init --recursive
+if [ ! -d "arrow" ]; then
+    git clone https://github.com/apache/arrow
+    cd arrow/
+    git submodule update --init --recursive
+fi
+
+cd arrow
+git pull
 
 mkdir -p cpp/release
 cd cpp/release
