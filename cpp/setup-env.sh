@@ -15,11 +15,10 @@ apt install -y python3 \
 
 if [ ! -d "arrow" ]; then
     git clone https://github.com/apache/arrow
-    cd arrow/
-    git submodule update --init --recursive
 fi
 
 cd arrow
+git submodule update --init --recursive
 git pull
 
 mkdir -p cpp/release
