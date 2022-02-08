@@ -39,144 +39,144 @@ namespace ds = arrow::dataset;
 
 namespace cp = arrow::compute;
 
-#define ABORT_ON_FAILURE(expr)                     \
-  do {                                             \
-    arrow::Status status_ = (expr);                \
-    if (!status_.ok()) {                           \
-      std::cerr << status_.message() << std::endl; \
-      abort();                                     \
-    }                                              \
-  } while (0);
+// #define ABORT_ON_FAILURE(expr)                     \
+//   do {                                             \
+//     arrow::Status status_ = (expr);                \
+//     if (!status_.ok()) {                           \
+//       std::cerr << status_.message() << std::endl; \
+//       abort();                                     \
+//     }                                              \
+//   } while (0);
 
-struct Configuration {
-  // Increase the ds::DataSet by repeating `repeat` times the ds::Dataset.
-  size_t repeat = 1;
+// struct Configuration {
+//   // Increase the ds::DataSet by repeating `repeat` times the ds::Dataset.
+//   size_t repeat = 1;
 
-  // Indicates if the Scanner::ToTable should consume in parallel.
-  bool use_threads = true;
+//   // Indicates if the Scanner::ToTable should consume in parallel.
+//   bool use_threads = true;
 
-  // Indicates to the Scan operator which columns are requested. This
-  // optimization avoid deserializing unneeded columns.
-  std::vector<std::string> projected_columns = {"pickup_at", "dropoff_at",
-                                                "total_amount"};
+//   // Indicates to the Scan operator which columns are requested. This
+//   // optimization avoid deserializing unneeded columns.
+//   std::vector<std::string> projected_columns = {"pickup_at", "dropoff_at",
+//                                                 "total_amount"};
 
-  // Indicates the filter by which rows will be filtered. This optimization can
-  // make use of partition information and/or file metadata if possible.
-  cp::Expression filter =
-      cp::greater(cp::field_ref("total_amount"), cp::literal(1000.0f));
+//   // Indicates the filter by which rows will be filtered. This optimization can
+//   // make use of partition information and/or file metadata if possible.
+//   cp::Expression filter =
+//       cp::greater(cp::field_ref("total_amount"), cp::literal(1000.0f));
 
-  ds::InspectOptions inspect_options{};
-  ds::FinishOptions finish_options{};
-} conf;
+//   ds::InspectOptions inspect_options{};
+//   ds::FinishOptions finish_options{};
+// } conf;
 
-std::shared_ptr<fs::FileSystem> GetFileSystemFromUri(const std::string& uri,
-                                                     std::string* path) {
-  return fs::FileSystemFromUri(uri, path).ValueOrDie();
-}
+// std::shared_ptr<fs::FileSystem> GetFileSystemFromUri(const std::string& uri,
+//                                                      std::string* path) {
+//   return fs::FileSystemFromUri(uri, path).ValueOrDie();
+// }
 
-std::shared_ptr<ds::Dataset> GetDatasetFromDirectory(
-    std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
-    std::string dir) {
-  // Find all files under `path`
-  fs::FileSelector s;
-  s.base_dir = dir;
-  s.recursive = true;
+// std::shared_ptr<ds::Dataset> GetDatasetFromDirectory(
+//     std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
+//     std::string dir) {
+//   // Find all files under `path`
+//   fs::FileSelector s;
+//   s.base_dir = dir;
+//   s.recursive = true;
 
-  ds::FileSystemFactoryOptions options;
-  // The factory will try to build a child dataset.
-  auto factory = ds::FileSystemDatasetFactory::Make(fs, s, format, options).ValueOrDie();
+//   ds::FileSystemFactoryOptions options;
+//   // The factory will try to build a child dataset.
+//   auto factory = ds::FileSystemDatasetFactory::Make(fs, s, format, options).ValueOrDie();
 
-  // Try to infer a common schema for all files.
-  auto schema = factory->Inspect(conf.inspect_options).ValueOrDie();
-  // Caller can optionally decide another schema as long as it is compatible
-  // with the previous one, e.g. `factory->Finish(compatible_schema)`.
-  auto child = factory->Finish(conf.finish_options).ValueOrDie();
+//   // Try to infer a common schema for all files.
+//   auto schema = factory->Inspect(conf.inspect_options).ValueOrDie();
+//   // Caller can optionally decide another schema as long as it is compatible
+//   // with the previous one, e.g. `factory->Finish(compatible_schema)`.
+//   auto child = factory->Finish(conf.finish_options).ValueOrDie();
 
-  ds::DatasetVector children{conf.repeat, child};
-  auto dataset = ds::UnionDataset::Make(std::move(schema), std::move(children));
+//   ds::DatasetVector children{conf.repeat, child};
+//   auto dataset = ds::UnionDataset::Make(std::move(schema), std::move(children));
 
-  return dataset.ValueOrDie();
-}
+//   return dataset.ValueOrDie();
+// }
 
-std::shared_ptr<ds::Dataset> GetParquetDatasetFromMetadata(
-    std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
-    std::string metadata_path) {
-  ds::ParquetFactoryOptions options;
-  auto factory =
-      ds::ParquetDatasetFactory::Make(metadata_path, fs, format, options).ValueOrDie();
-  return factory->Finish().ValueOrDie();
-}
+// std::shared_ptr<ds::Dataset> GetParquetDatasetFromMetadata(
+//     std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
+//     std::string metadata_path) {
+//   ds::ParquetFactoryOptions options;
+//   auto factory =
+//       ds::ParquetDatasetFactory::Make(metadata_path, fs, format, options).ValueOrDie();
+//   return factory->Finish().ValueOrDie();
+// }
 
-std::shared_ptr<ds::Dataset> GetDatasetFromFile(
-    std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
-    std::string file) {
-  ds::FileSystemFactoryOptions options;
-  // The factory will try to build a child dataset.
-  auto factory =
-      ds::FileSystemDatasetFactory::Make(fs, {file}, format, options).ValueOrDie();
+// std::shared_ptr<ds::Dataset> GetDatasetFromFile(
+//     std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
+//     std::string file) {
+//   ds::FileSystemFactoryOptions options;
+//   // The factory will try to build a child dataset.
+//   auto factory =
+//       ds::FileSystemDatasetFactory::Make(fs, {file}, format, options).ValueOrDie();
 
-  // Try to infer a common schema for all files.
-  auto schema = factory->Inspect(conf.inspect_options).ValueOrDie();
-  // Caller can optionally decide another schema as long as it is compatible
-  // with the previous one, e.g. `factory->Finish(compatible_schema)`.
-  auto child = factory->Finish(conf.finish_options).ValueOrDie();
+//   // Try to infer a common schema for all files.
+//   auto schema = factory->Inspect(conf.inspect_options).ValueOrDie();
+//   // Caller can optionally decide another schema as long as it is compatible
+//   // with the previous one, e.g. `factory->Finish(compatible_schema)`.
+//   auto child = factory->Finish(conf.finish_options).ValueOrDie();
 
-  ds::DatasetVector children;
-  children.resize(conf.repeat, child);
-  auto dataset = ds::UnionDataset::Make(std::move(schema), std::move(children));
+//   ds::DatasetVector children;
+//   children.resize(conf.repeat, child);
+//   auto dataset = ds::UnionDataset::Make(std::move(schema), std::move(children));
 
-  return dataset.ValueOrDie();
-}
+//   return dataset.ValueOrDie();
+// }
 
-std::shared_ptr<ds::Dataset> GetDatasetFromPath(
-    std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
-    std::string path) {
-  auto info = fs->GetFileInfo(path).ValueOrDie();
-  if (info.IsDirectory()) {
-    return GetDatasetFromDirectory(fs, format, path);
-  }
+// std::shared_ptr<ds::Dataset> GetDatasetFromPath(
+//     std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
+//     std::string path) {
+//   auto info = fs->GetFileInfo(path).ValueOrDie();
+//   if (info.IsDirectory()) {
+//     return GetDatasetFromDirectory(fs, format, path);
+//   }
 
-  auto dirname_basename = arrow::fs::internal::GetAbstractPathParent(path);
-  auto basename = dirname_basename.second;
+//   auto dirname_basename = arrow::fs::internal::GetAbstractPathParent(path);
+//   auto basename = dirname_basename.second;
 
-  if (basename == "_metadata") {
-    return GetParquetDatasetFromMetadata(fs, format, path);
-  }
+//   if (basename == "_metadata") {
+//     return GetParquetDatasetFromMetadata(fs, format, path);
+//   }
 
-  return GetDatasetFromFile(fs, format, path);
-}
+//   return GetDatasetFromFile(fs, format, path);
+// }
 
-std::shared_ptr<ds::Scanner> GetScannerFromDataset(std::shared_ptr<ds::Dataset> dataset,
-                                                   std::vector<std::string> columns,
-                                                   cp::Expression filter,
-                                                   bool use_threads) {
-  auto scanner_builder = dataset->NewScan().ValueOrDie();
-  ABORT_ON_FAILURE(scanner_builder->UseThreads(use_threads));
-  return scanner_builder->Finish().ValueOrDie();
-}
+// std::shared_ptr<ds::Scanner> GetScannerFromDataset(std::shared_ptr<ds::Dataset> dataset,
+//                                                    std::vector<std::string> columns,
+//                                                    cp::Expression filter,
+//                                                    bool use_threads) {
+//   auto scanner_builder = dataset->NewScan().ValueOrDie();
+//   ABORT_ON_FAILURE(scanner_builder->UseThreads(use_threads));
+//   return scanner_builder->Finish().ValueOrDie();
+// }
 
-std::shared_ptr<Table> GetTableFromScanner(std::shared_ptr<ds::Scanner> scanner) {
-  return scanner->ToTable().ValueOrDie();
-}
+// std::shared_ptr<Table> GetTableFromScanner(std::shared_ptr<ds::Scanner> scanner) {
+//   return scanner->ToTable().ValueOrDie();
+// }
 
 int main(int argc, char** argv) {
   auto format = std::make_shared<ds::ParquetFileFormat>();
 
-  if (argc != 2) {
-    // Fake success for CI purposes.
-    return EXIT_SUCCESS;
-  }
+  // if (argc != 2) {
+  //   // Fake success for CI purposes.
+  //   return EXIT_SUCCESS;
+  // }
 
-  std::string path;
-  auto fs = GetFileSystemFromUri(argv[1], &path);
+  // std::string path;
+  // auto fs = GetFileSystemFromUri(argv[1], &path);
 
-  auto dataset = GetDatasetFromPath(fs, format, path);
+  // auto dataset = GetDatasetFromPath(fs, format, path);
 
-  auto scanner = GetScannerFromDataset(dataset, conf.projected_columns, conf.filter,
-                                       conf.use_threads);
+  // auto scanner = GetScannerFromDataset(dataset, conf.projected_columns, conf.filter,
+  //                                      conf.use_threads);
 
-  auto table = GetTableFromScanner(scanner);
-  std::cout << "Table size: " << table->num_rows() << "\n";
+  // auto table = GetTableFromScanner(scanner);
+  // std::cout << "Table size: " << table->num_rows() << "\n";
 
-  return EXIT_SUCCESS;
+  // return EXIT_SUCCESS;
 }
