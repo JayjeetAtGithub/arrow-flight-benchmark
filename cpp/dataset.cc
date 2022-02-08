@@ -24,8 +24,6 @@
 #include <arrow/dataset/scanner.h>
 #include <arrow/filesystem/filesystem.h>
 #include <arrow/filesystem/path_util.h>
-
-#include <cstdlib>
 #include <iostream>
 
 using arrow::field;
@@ -34,9 +32,7 @@ using arrow::Schema;
 using arrow::Table;
 
 namespace fs = arrow::fs;
-
 namespace ds = arrow::dataset;
-
 namespace cp = arrow::compute;
 
 // #define ABORT_ON_FAILURE(expr)                     \
