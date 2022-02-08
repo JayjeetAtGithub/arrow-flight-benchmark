@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
   auto fs = fs::FileSystemFromUri(uri, &root_path).ValueOrDie();
 
   std::shared_ptr<ds::FileFormat> format = std::make_shared<ds::ParquetFileFormat>();
-  std::string base_path = CreateExampleParquetDataset(fs, root_path);
+  std::string base_path = "/mnt/cephfs/dataset";
 
   std::shared_ptr<arrow::Table> table = ScanWholeDataset(fs, format, base_path);
   
