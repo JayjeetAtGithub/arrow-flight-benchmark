@@ -15,25 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include <arrow/api.h>
-#include <arrow/compute/exec/expression.h>
-#include <arrow/dataset/dataset.h>
-#include <arrow/dataset/discovery.h>
-#include <arrow/dataset/file_base.h>
+// #include <arrow/api.h>
+// #include <arrow/compute/exec/expression.h>
+// #include <arrow/dataset/dataset.h>
+// #include <arrow/dataset/discovery.h>
+// #include <arrow/dataset/file_base.h>
 #include <arrow/dataset/file_parquet.h>
-#include <arrow/dataset/scanner.h>
-#include <arrow/filesystem/filesystem.h>
-#include <arrow/filesystem/path_util.h>
+// #include <arrow/dataset/scanner.h>
+// #include <arrow/filesystem/filesystem.h>
+// #include <arrow/filesystem/path_util.h>
 #include <iostream>
 
-using arrow::field;
-using arrow::int16;
-using arrow::Schema;
-using arrow::Table;
+// using arrow::field;
+// using arrow::int16;
+// using arrow::Schema;
+// using arrow::Table;
 
-namespace fs = arrow::fs;
+// namespace fs = arrow::fs;
 namespace ds = arrow::dataset;
-namespace cp = arrow::compute;
+// namespace cp = arrow::compute;
 
 // #define ABORT_ON_FAILURE(expr)                     \
 //   do {                                             \
