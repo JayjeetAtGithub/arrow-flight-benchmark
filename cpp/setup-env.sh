@@ -33,6 +33,7 @@ cmake -DARROW_PARQUET=ON \
   -DARROW_CSV=ON \
   -DARROW_WITH_LZ4=ON \
   -DARROW_WITH_ZSTD=ON \
+  -DARROW_FLIGHT=ON \
   ..
 
 make -j4 install
