@@ -76,11 +76,8 @@ class IntegrationTestClient {
         final Location defaultLocation = Location.forGrpcInsecure(host, port);
         try (final BufferAllocator allocator = new RootAllocator(Integer.MAX_VALUE);
              final FlightClient client = FlightClient.builder(allocator, defaultLocation).build()) {
-
-
                 final String inputPath = cmd.getOptionValue("j");
                 testStream(allocator, defaultLocation, client, inputPath);
-
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -88,40 +85,7 @@ class IntegrationTestClient {
 
     private static void testStream(BufferAllocator allocator, Location server, FlightClient client, String inputPath)
             throws IOException {
-        // 1. Read data from JSON and upload to server.
         FlightDescriptor descriptor = FlightDescriptor.path(inputPath);
-        try (JsonFileReader reader = new JsonFileReader(new File(inputPath), allocator);
-             VectorSchemaRoot root = VectorSchemaRoot.create(reader.start(), allocator)) {
-            FlightClient.ClientStreamListener stream = client.startPut(descriptor, root, reader,
-                    new AsyncPutListener() {
-                        int counter = 0;
-
-                        @Override
-                        public void onNext(PutResult val) {
-                            final byte[] metadataRaw = new byte[checkedCastToInt(val.getApplicationMetadata().readableBytes())];
-                            val.getApplicationMetadata().readBytes(metadataRaw);
-                            final String metadata = new String(metadataRaw, StandardCharsets.UTF_8);
-                            if (!Integer.toString(counter).equals(metadata)) {
-                                throw new RuntimeException(
-                                        String.format("Invalid ACK from server. Expected '%d' but got '%s'.", counter, metadata));
-                            }
-                            counter++;
-                        }
-                    });
-            int counter = 0;
-            while (reader.read(root)) {
-                final byte[] rawMetadata = Integer.toString(counter).getBytes(StandardCharsets.UTF_8);
-                final ArrowBuf metadata = allocator.buffer(rawMetadata.length);
-                metadata.writeBytes(rawMetadata);
-                // Transfers ownership of the buffer, so do not release it ourselves
-                stream.putNext(metadata);
-                root.clear();
-                counter++;
-            }
-            stream.completed();
-            // Need to call this, or exceptions from the server get swallowed
-            stream.getResult();
-        }
 
         // 2. Get the ticket for the data.
         FlightInfo info = client.getInfo(descriptor);
