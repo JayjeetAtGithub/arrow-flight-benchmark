@@ -20,7 +20,7 @@ arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServe
 
 int main() {
   auto client = ConnectToFlightServer().ValueOrDie();
-  auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets/16MB.uncompressed.parquet"});
+  auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets"});
   std::cout << "Created flight descriptor" << std::endl;
 
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
