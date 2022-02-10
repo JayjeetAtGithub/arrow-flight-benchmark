@@ -29,6 +29,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
   arrow::Status DoGet(const arrow::flight::ServerCallContext&,
                       const arrow::flight::Ticket& request,
                       std::unique_ptr<arrow::flight::FlightDataStream>* stream) {
+    std::cout << "Dataset path: " << request.ticket;
     arrow::dataset::FileSystemFactoryOptions options;
     auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
     ARROW_ASSIGN_OR_RAISE(auto factory,
