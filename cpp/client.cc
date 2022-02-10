@@ -7,10 +7,15 @@
 #include <arrow/io/api.h>
 
 
-arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServer() {
+struct ConnectionInfo {
+  std::string host;
+  int port;
+};
+
+arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServer(ConnectionInfo info) {
   arrow::flight::Location location;
   ARROW_RETURN_NOT_OK(
-      arrow::flight::Location::ForGrpcTcp("localhost", 33004, &location));
+      arrow::flight::Location::ForGrpcTcp(info.host, info.port, &location));
 
   std::unique_ptr<arrow::flight::FlightClient> client;
   ARROW_RETURN_NOT_OK(arrow::flight::FlightClient::Connect(location, &client));
@@ -18,16 +23,20 @@ arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServe
   return client;
 }
 
-int main() {
-  auto client = ConnectToFlightServer().ValueOrDie();
-  auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets"});
-  std::cout << "Created flight descriptor" << std::endl;
+int main(int argc, char *argv[]) {
+  // Get connection info from user input
+  ConnectionInfo info;
+  info.host = argv[1];
+  info.port = (int32_t)std::stoi(argv[2]);
 
+  // Connect to flight server
+  auto client = ConnectToFlightServer(info).ValueOrDie();
+  auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets"});
+
+  // Get flight info
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
   client->GetFlightInfo(descriptor, &flight_info);
   std::cout << flight_info->descriptor().ToString() << std::endl;
-
-  std::cout << "Got flight info" << std::endl;
 
   std::cout << "=== Schema ===" << std::endl;
   std::shared_ptr<arrow::Schema> info_schema;
