@@ -1,7 +1,12 @@
 #include <arrow/api.h>
 #include <arrow/flight/api.h>
+#include <arrow/filesystem/api.h>
 #include <arrow/ipc/api.h>
 #include <arrow/io/api.h>
+#include "parquet/arrow/reader.h"
+#include "parquet/arrow/schema.h"
+#include "parquet/arrow/writer.h"
+#include "parquet/file_reader.h"
 
 class ParquetStorageService : public arrow::flight::FlightServerBase {
  public:
