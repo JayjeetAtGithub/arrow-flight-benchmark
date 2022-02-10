@@ -7,7 +7,7 @@
 #include <arrow/io/api.h>
 
 
-arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServer() {
+arrow::Result<std::shared_ptr<arrow::flight::FlightClient>> ConnectToFlightServer() {
   arrow::flight::Location location;
   ARROW_RETURN_NOT_OK(
       arrow::flight::Location::ForGrpcTcp("localhost", 33004, &location));
