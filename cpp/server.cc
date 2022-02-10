@@ -159,5 +159,5 @@ int main() {
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
       new ParquetStorageService(std::move(root)));
   ARROW_RETURN_NOT_OK(server->Init(options));
-  cout << "Listening on port " << server->port() << std::endl;
+  std::cout << "Listening on port " << server->port() << std::endl;
 }
