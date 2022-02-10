@@ -9,7 +9,7 @@
 
 struct ConnectionInfo {
   std::string host;
-  int port;
+  int32_t port;
 };
 
 arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServer(ConnectionInfo info) {
