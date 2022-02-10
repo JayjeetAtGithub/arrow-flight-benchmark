@@ -1,6 +1,6 @@
 all:
-	rm server 
-	rm client
+	rm -rf server 
+	rm -rf client
 	g++ -std=c++11 server.cc -larrow -larrow_dataset -larrow_flight -lparquet -o server
 	g++ -std=c++11 client.cc -larrow -larrow_dataset -larrow_flight -lparquet -o client
 
