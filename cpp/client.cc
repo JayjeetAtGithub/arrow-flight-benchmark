@@ -20,25 +20,25 @@ arrow::Result<std::shared_ptr<arrow::flight::FlightClient>> ConnectToFlightServe
 
 int main() {
   auto client = ConnectToFlightServer();
-  auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets/16MB.uncompressed.parquet"});
-  std::cout << "Created flight descriptor" << std::endl;
+  // auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets/16MB.uncompressed.parquet"});
+  // std::cout << "Created flight descriptor" << std::endl;
 
-  std::unique_ptr<arrow::flight::FlightInfo> flight_info;
-  client->GetFlightInfo(descriptor, &flight_info);
-  std::cout << flight_info->descriptor().ToString() << std::endl;
+  // std::unique_ptr<arrow::flight::FlightInfo> flight_info;
+  // client->GetFlightInfo(descriptor, &flight_info);
+  // std::cout << flight_info->descriptor().ToString() << std::endl;
 
-  std::cout << "Got flight info" << std::endl;
+  // std::cout << "Got flight info" << std::endl;
 
-  std::cout << "=== Schema ===" << std::endl;
-  std::shared_ptr<arrow::Schema> info_schema;
-  arrow::ipc::DictionaryMemo dictionary_memo;
-  flight_info->GetSchema(&dictionary_memo, &info_schema);
-  std::cout << info_schema->ToString() << std::endl;
-  std::cout << "==============" << std::endl;
+  // std::cout << "=== Schema ===" << std::endl;
+  // std::shared_ptr<arrow::Schema> info_schema;
+  // arrow::ipc::DictionaryMemo dictionary_memo;
+  // flight_info->GetSchema(&dictionary_memo, &info_schema);
+  // std::cout << info_schema->ToString() << std::endl;
+  // std::cout << "==============" << std::endl;
 
-  std::unique_ptr<arrow::flight::FlightStreamReader> stream;
-  client->DoGet(flight_info->endpoints()[0].ticket, &stream);
-  std::shared_ptr<arrow::Table> table;
-  stream->ReadAll(&table);
-  std::cout << table->ToString() << std::endl;
+  // std::unique_ptr<arrow::flight::FlightStreamReader> stream;
+  // client->DoGet(flight_info->endpoints()[0].ticket, &stream);
+  // std::shared_ptr<arrow::Table> table;
+  // stream->ReadAll(&table);
+  // std::cout << table->ToString() << std::endl;
 }
