@@ -161,4 +161,5 @@ int main() {
       new ParquetStorageService(std::move(root)));
   server->Init(options);
   std::cout << "Listening on port " << server->port() << std::endl;
+  while (1);
 }
