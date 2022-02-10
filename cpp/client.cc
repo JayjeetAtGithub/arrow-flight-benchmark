@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
   // Connect to flight server
   auto client = ConnectToFlightServer(info).ValueOrDie();
-  auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets"});
+  auto descriptor = arrow::flight::FlightDescriptor::Path({"16MB.uncompressed.parquet"});
 
   // Get flight info
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
