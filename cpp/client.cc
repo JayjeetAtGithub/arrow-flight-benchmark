@@ -38,13 +38,7 @@ int main(int argc, char *argv[]) {
   client->GetFlightInfo(descriptor, &flight_info);
   std::cout << flight_info->descriptor().ToString() << std::endl;
 
-  std::cout << "=== Schema ===" << std::endl;
-  std::shared_ptr<arrow::Schema> info_schema;
-  arrow::ipc::DictionaryMemo dictionary_memo;
-  flight_info->GetSchema(&dictionary_memo, &info_schema);
-  std::cout << info_schema->ToString() << std::endl;
-  std::cout << "==============" << std::endl;
-
+  // Read table from flight server
   std::unique_ptr<arrow::flight::FlightStreamReader> stream;
   client->DoGet(flight_info->endpoints()[0].ticket, &stream);
   std::shared_ptr<arrow::Table> table;
