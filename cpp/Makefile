@@ -1,5 +1,5 @@
 server:
-	clangd -std=c++11 -larrow -larrow_dataset -lparquet server.cc -o server
+	g++ -std=c++11 -larrow -larrow_dataset -lparquet server.cc -o server
 
 client: 
-	clangd -std=c++11 -larrow -larrow_dataset -lparquet client.cc -o client
+	g++ -std=c++11 -larrow -larrow_dataset -lparquet client.cc -o client
