@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <arrow/api.h>
 #include <arrow/flight/api.h>
 #include <arrow/filesystem/api.h>
@@ -147,17 +149,16 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
 
 int main() {
   auto fs = std::make_shared<arrow::fs::LocalFileSystem>();
-  ARROW_RETURN_NOT_OK(fs->CreateDir("./flight_datasets/"));
-  ARROW_RETURN_NOT_OK(fs->DeleteDirContents("./flight_datasets/"));
+  fs->CreateDir("./flight_datasets/");
+  fs->DeleteDirContents("./flight_datasets/");
   auto root = std::make_shared<arrow::fs::SubTreeFileSystem>("./flight_datasets/", fs);
 
   arrow::flight::Location server_location;
-  ARROW_RETURN_NOT_OK(
-      arrow::flight::Location::ForGrpcTcp("0.0.0.0", 0, &server_location));
+  arrow::flight::Location::ForGrpcTcp("0.0.0.0", 0, &server_location);
 
   arrow::flight::FlightServerOptions options(server_location);
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
       new ParquetStorageService(std::move(root)));
-  ARROW_RETURN_NOT_OK(server->Init(options));
+  server->Init(options);
   std::cout << "Listening on port " << server->port() << std::endl;
 }
