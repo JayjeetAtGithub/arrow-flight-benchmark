@@ -21,9 +21,14 @@ arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServe
 int main() {
   auto client = ConnectToFlightServer().ValueOrDie();
   auto descriptor = arrow::flight::FlightDescriptor::Path({"flight_datasets/16MB.uncompressed.parquet"});
+  std::cout << "Created flight descriptor" << std::endl;
+
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
   client->GetFlightInfo(descriptor, &flight_info);
   std::cout << flight_info->descriptor().ToString() << std::endl;
+
+  std::cout << "Got flight info" << std::endl;
+
   std::cout << "=== Schema ===" << std::endl;
   std::shared_ptr<arrow::Schema> info_schema;
   arrow::ipc::DictionaryMemo dictionary_memo;
