@@ -154,7 +154,7 @@ int main() {
   auto root = std::make_shared<arrow::fs::SubTreeFileSystem>("./flight_datasets/", fs);
 
   arrow::flight::Location server_location;
-  arrow::flight::Location::ForGrpcTcp("0.0.0.0", 0, &server_location);
+  arrow::flight::Location::ForGrpcTcp("0.0.0.0", 33004, &server_location);
 
   arrow::flight::FlightServerOptions options(server_location);
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
