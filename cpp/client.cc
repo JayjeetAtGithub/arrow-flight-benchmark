@@ -10,7 +10,7 @@
 arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServer() {
   arrow::flight::Location location;
   ARROW_RETURN_NOT_OK(
-      arrow::flight::Location::ForGrpcTcp("localhost", 33005, &location));
+      arrow::flight::Location::ForGrpcTcp("localhost", 33004, &location));
 
   std::unique_ptr<arrow::flight::FlightClient> client;
   ARROW_RETURN_NOT_OK(arrow::flight::FlightClient::Connect(location, &client));
