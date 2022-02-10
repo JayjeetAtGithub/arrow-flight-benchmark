@@ -7,7 +7,7 @@
 #include <arrow/io/api.h>
 
 
-arrow::Status ConnectToFlightServer() {
+arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServer() {
   arrow::flight::Location location;
   ARROW_RETURN_NOT_OK(
       arrow::flight::Location::ForGrpcTcp("localhost", 33005, &location));
@@ -15,10 +15,11 @@ arrow::Status ConnectToFlightServer() {
   std::unique_ptr<arrow::flight::FlightClient> client;
   ARROW_RETURN_NOT_OK(arrow::flight::FlightClient::Connect(location, &client));
   std::cout << "Connected to " << location.ToString() << std::endl;
-  return arrow::Status::OK();
+  return client;
 }
 
 int main() {
+  auto client = ConnectToFlightServer().ValueOrDie();
   auto descriptor = arrow::flight::FlightDescriptor::Path({"16MB.uncompressed.parquet"});
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
   client->GetFlightInfo(descriptor, &flight_info);
