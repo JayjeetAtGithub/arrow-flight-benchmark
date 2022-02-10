@@ -103,26 +103,26 @@ namespace ds = arrow::dataset;
 //   return factory->Finish().ValueOrDie();
 // }
 
-// std::shared_ptr<ds::Dataset> GetDatasetFromFile(
-//     std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
-//     std::string file) {
-//   ds::FileSystemFactoryOptions options;
-//   // The factory will try to build a child dataset.
-//   auto factory =
-//       ds::FileSystemDatasetFactory::Make(fs, {file}, format, options).ValueOrDie();
+std::shared_ptr<ds::Dataset> GetDatasetFromFile(
+    std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,
+    std::string file) {
+  ds::FileSystemFactoryOptions options;
+  // The factory will try to build a child dataset.
+  auto factory =
+      ds::FileSystemDatasetFactory::Make(fs, {file}, format, options).ValueOrDie();
 
-//   // Try to infer a common schema for all files.
-//   auto schema = factory->Inspect(conf.inspect_options).ValueOrDie();
-//   // Caller can optionally decide another schema as long as it is compatible
-//   // with the previous one, e.g. `factory->Finish(compatible_schema)`.
-//   auto child = factory->Finish(conf.finish_options).ValueOrDie();
+  // Try to infer a common schema for all files.
+  auto schema = factory->Inspect(conf.inspect_options).ValueOrDie();
+  // Caller can optionally decide another schema as long as it is compatible
+  // with the previous one, e.g. `factory->Finish(compatible_schema)`.
+  auto child = factory->Finish(conf.finish_options).ValueOrDie();
 
-//   ds::DatasetVector children;
-//   children.resize(conf.repeat, child);
-//   auto dataset = ds::UnionDataset::Make(std::move(schema), std::move(children));
+  ds::DatasetVector children;
+  children.resize(conf.repeat, child);
+  auto dataset = ds::UnionDataset::Make(std::move(schema), std::move(children));
 
-//   return dataset.ValueOrDie();
-// }
+  return dataset.ValueOrDie();
+}
 
 // std::shared_ptr<ds::Dataset> GetDatasetFromPath(
 //     std::shared_ptr<fs::FileSystem> fs, std::shared_ptr<ds::ParquetFileFormat> format,

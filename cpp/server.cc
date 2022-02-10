@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <arrow/api.h>
+#include <arrow/dataset/api.h>
 #include <arrow/flight/api.h>
 #include <arrow/filesystem/api.h>
 #include <arrow/ipc/api.h>
@@ -28,13 +29,16 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
   arrow::Status DoGet(const arrow::flight::ServerCallContext&,
                       const arrow::flight::Ticket& request,
                       std::unique_ptr<arrow::flight::FlightDataStream>* stream) {
-    ARROW_ASSIGN_OR_RAISE(auto input, root_->OpenInputFile(request.ticket));
-    std::unique_ptr<parquet::arrow::FileReader> reader;
-    ARROW_RETURN_NOT_OK(parquet::arrow::OpenFile(std::move(input),
-                                                 arrow::default_memory_pool(), &reader));
+    arrow::dataset::FileSystemFactoryOptions options;
+    auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
+    ARROW_ASSIGN_OR_RAISE(auto factory,
+      ds::FileSystemDatasetFactory::Make(request.ticket, format, options));
+    arrow::dataset::FinishOptions finish_options{};
+    ARROW_ASSIGN_OR_RAISE(auto dataset, factory->Finish(finish_options));
+    ARROW_ASSIGN_OR_RAISE(auto scanner_builder, dataset->NewScan());
+    ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
+    ARROW_ASSIGN_OR_RAISE(auto table, scanner->ToTable());
 
-    std::shared_ptr<arrow::Table> table;
-    ARROW_RETURN_NOT_OK(reader->ReadTable(&table));
     std::vector<std::shared_ptr<arrow::RecordBatch>> batches;
     arrow::TableBatchReader batch_reader(*table);
     ARROW_RETURN_NOT_OK(batch_reader.ReadAll(&batches));
