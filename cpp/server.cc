@@ -32,7 +32,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     arrow::dataset::FileSystemFactoryOptions options;
     auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
     ARROW_ASSIGN_OR_RAISE(auto factory,
-      ds::FileSystemDatasetFactory::Make(request.ticket, format, options));
+      arrow::dataset::FileSystemDatasetFactory::Make(request.ticket, format, options));
     arrow::dataset::FinishOptions finish_options{};
     ARROW_ASSIGN_OR_RAISE(auto dataset, factory->Finish(finish_options));
     ARROW_ASSIGN_OR_RAISE(auto scanner_builder, dataset->NewScan());
