@@ -70,7 +70,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
       const arrow::fs::FileInfo& file_info) {
     ARROW_ASSIGN_OR_RAISE(auto input, root_->OpenInputFile(file_info));
     std::unique_ptr<parquet::arrow::FileReader> reader;
-        std::cout << "MakeFlightInfo: \n";
+        std::cerr << "MakeFlightInfo: \n";
 
     ARROW_RETURN_NOT_OK(parquet::arrow::OpenFile(std::move(input),
                                                  arrow::default_memory_pool(), &reader));
