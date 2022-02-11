@@ -70,7 +70,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
       const arrow::fs::FileInfo& file_info) {
     ARROW_ASSIGN_OR_RAISE(auto input, root_->OpenInputFile(file_info));
     std::unique_ptr<parquet::arrow::FileReader> reader;
-        std::cerr << "MakeFlightInfo: \n";
+    std::cerr << "MakeFlightInfo: \n";
 
     ARROW_RETURN_NOT_OK(parquet::arrow::OpenFile(std::move(input),
                                                  arrow::default_memory_pool(), &reader));
@@ -110,14 +110,13 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
 
 int main() {
   auto fs = std::make_shared<arrow::fs::LocalFileSystem>();
-  auto root = std::make_shared<arrow::fs::SubTreeFileSystem>("./flight_datasets/", fs);
 
   arrow::flight::Location server_location;
   arrow::flight::Location::ForGrpcTcp("0.0.0.0", 0, &server_location);
 
   arrow::flight::FlightServerOptions options(server_location);
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
-      new ParquetStorageService(std::move(root)));
+      new ParquetStorageService(std::move(fs)));
   server->Init(options);
   std::cout << "Listening on port " << server->port() << std::endl;
   while (1);
