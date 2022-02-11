@@ -31,7 +31,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
                       const arrow::flight::Ticket& request,
                       std::unique_ptr<arrow::flight::FlightDataStream>* stream) {
     std::string path;
-    ARROW_ASSIGN_OR_RAISE(auto fs, arrow::fs::FileSystemFromUri(request.ticket, path)); 
+    ARROW_ASSIGN_OR_RAISE(auto fs, arrow::fs::FileSystemFromUri(request.ticket, &path)); 
     auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
       
     arrow::fs::FileSelector s;
