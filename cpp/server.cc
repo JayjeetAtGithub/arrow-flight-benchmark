@@ -20,15 +20,15 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
   arrow::Status GetFlightInfo(const arrow::flight::ServerCallContext&,
                               const arrow::flight::FlightDescriptor& descriptor,
                               std::unique_ptr<arrow::flight::FlightInfo>* info) {
-    std::cout << "Called GetFlightInfo" << std::endl;
+    std::cerr << "Called GetFlightInfo" << std::endl;
     ARROW_ASSIGN_OR_RAISE(auto file_info, FileInfoFromDescriptor(descriptor));
-    std::cout << "Called FileInfoFromDescriptor" << std::endl;
+    std::cerr << "Called FileInfoFromDescriptor" << std::endl;
     ARROW_ASSIGN_OR_RAISE(auto flight_info, MakeFlightInfo(file_info));
-    std::cout << "Called MakeFileInfo" << std::endl;
+    std::cerr << "Called MakeFileInfo" << std::endl;
 
     *info = std::unique_ptr<arrow::flight::FlightInfo>(
         new arrow::flight::FlightInfo(std::move(flight_info)));
-    std::cout << "FlightInfo" << std::endl;
+    std::cerr << "FlightInfo" << std::endl;
     return arrow::Status::OK();
   }
 
