@@ -14,13 +14,13 @@
 
 class ParquetStorageService : public arrow::flight::FlightServerBase {
  public:
-  explicit ParquetStorageService(std::shared_ptr<arrow::fs::FileSystem> root)
-      : root_(std::move(root)) {}
+  explicit ParquetStorageService(std::shared_ptr<arrow::fs::FileSystem> fs)
+      : fs_(std::move(fs)) {}
 
   arrow::Status GetFlightInfo(const arrow::flight::ServerCallContext&,
                               const arrow::flight::FlightDescriptor& descriptor,
                               std::unique_ptr<arrow::flight::FlightInfo>* info) {
-    ARROW_ASSIGN_OR_RAISE(auto file_info, FileInfoFromDescriptor(descriptor));
+    ARROW_ASSIGN_OR_RAISE(auto file_info, fs_->GetFileInfo(descriptor.path[0]));
     ARROW_ASSIGN_OR_RAISE(auto flight_info, MakeFlightInfo(file_info));
     *info = std::unique_ptr<arrow::flight::FlightInfo>(
         new arrow::flight::FlightInfo(std::move(flight_info)));
@@ -77,18 +77,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     return arrow::flight::FlightInfo::Make(*schema, descriptor, {endpoint}, 0, 0);
   }
 
-  arrow::Result<arrow::fs::FileInfo> FileInfoFromDescriptor(
-      const arrow::flight::FlightDescriptor& descriptor) {
-    if (descriptor.type != arrow::flight::FlightDescriptor::PATH) {
-      return arrow::Status::Invalid("Must provide PATH-type FlightDescriptor");
-    } else if (descriptor.path.size() != 1) {
-      return arrow::Status::Invalid(
-          "Must provide PATH-type FlightDescriptor with one path component");
-    }
-    return root_->GetFileInfo(descriptor.path[0]);
-  }
-
-  std::shared_ptr<arrow::fs::FileSystem> root_;
+  std::shared_ptr<arrow::fs::FileSystem> fs_;
 };
 
 int main() {
