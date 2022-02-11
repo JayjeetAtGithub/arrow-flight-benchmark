@@ -20,15 +20,10 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
   arrow::Status GetFlightInfo(const arrow::flight::ServerCallContext&,
                               const arrow::flight::FlightDescriptor& descriptor,
                               std::unique_ptr<arrow::flight::FlightInfo>* info) {
-    std::cerr << "Called GetFlightInfo" << std::endl;
     ARROW_ASSIGN_OR_RAISE(auto file_info, FileInfoFromDescriptor(descriptor));
-    std::cerr << "Called FileInfoFromDescriptor" << std::endl;
     ARROW_ASSIGN_OR_RAISE(auto flight_info, MakeFlightInfo(file_info));
-    std::cerr << "Called MakeFileInfo" << std::endl;
-
     *info = std::unique_ptr<arrow::flight::FlightInfo>(
         new arrow::flight::FlightInfo(std::move(flight_info)));
-    std::cerr << "FlightInfo" << std::endl;
     return arrow::Status::OK();
   }
 
@@ -70,14 +65,11 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
       const arrow::fs::FileInfo& file_info) {
     ARROW_ASSIGN_OR_RAISE(auto input, root_->OpenInputFile(file_info));
     std::unique_ptr<parquet::arrow::FileReader> reader;
-    std::cerr << "MakeFlightInfo: \n";
 
     ARROW_RETURN_NOT_OK(parquet::arrow::OpenFile(std::move(input),
                                                  arrow::default_memory_pool(), &reader));
 
     std::shared_ptr<arrow::Schema> schema;
-    ARROW_RETURN_NOT_OK(reader->GetSchema(&schema));
-
     auto descriptor = arrow::flight::FlightDescriptor::Path({file_info.base_name()});
 
     arrow::flight::FlightEndpoint endpoint;
@@ -87,11 +79,8 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
         arrow::flight::Location::ForGrpcTcp("localhost", port(), &location));
     endpoint.locations.push_back(location);
 
-    int64_t total_records = reader->parquet_reader()->metadata()->num_rows();
-    int64_t total_bytes = file_info.size();
 
-    return arrow::flight::FlightInfo::Make(*schema, descriptor, {endpoint}, total_records,
-                                           total_bytes);
+    return arrow::flight::FlightInfo::Make(*schema, descriptor, {endpoint}, 0, 0);
   }
 
   arrow::Result<arrow::fs::FileInfo> FileInfoFromDescriptor(
