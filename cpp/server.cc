@@ -68,7 +68,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     auto descriptor = arrow::flight::FlightDescriptor::Path({file_info.path()});
 
     arrow::flight::FlightEndpoint endpoint;
-    endpoint.ticket.ticket = path;
+    endpoint.ticket.ticket = file_info.path();
     arrow::flight::Location location;
     ARROW_RETURN_NOT_OK(
         arrow::flight::Location::ForGrpcTcp("localhost", port(), &location));
