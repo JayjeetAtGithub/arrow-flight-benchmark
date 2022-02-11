@@ -75,12 +75,11 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     std::cerr << "Descriptor: " << descriptor.ToString()  << file_info.path() << std::endl;
 
     arrow::flight::FlightEndpoint endpoint;
-    endpoint.ticket.ticket = file_info.base_name();
+    endpoint.ticket.ticket = "file://" + file_info.dir_name();
     arrow::flight::Location location;
     ARROW_RETURN_NOT_OK(
         arrow::flight::Location::ForGrpcTcp("localhost", port(), &location));
     endpoint.locations.push_back(location);
-
 
     return arrow::flight::FlightInfo::Make(*schema, descriptor, {endpoint}, 0, 0);
   }
