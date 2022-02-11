@@ -69,13 +69,12 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     ARROW_RETURN_NOT_OK(parquet::arrow::OpenFile(std::move(input),
                                                  arrow::default_memory_pool(), &reader));
 
-    std::shared_ptr<arrow::Schema> schema;
-    auto descriptor = arrow::flight::FlightDescriptor::Path({file_info.base_name()});
-
-    std::cerr << "Descriptor: " << descriptor.ToString()  << file_info.path() << std::endl;
+    std::shared_ptr<arrow::Schema> schema = arrow::schema({});
+    std::string path = "file://" + file_info.dir_name();
+    auto descriptor = arrow::flight::FlightDescriptor::Path({path});
 
     arrow::flight::FlightEndpoint endpoint;
-    endpoint.ticket.ticket = "file://" + file_info.dir_name();
+    endpoint.ticket.ticket = path;
     arrow::flight::Location location;
     ARROW_RETURN_NOT_OK(
         arrow::flight::Location::ForGrpcTcp("localhost", port(), &location));
