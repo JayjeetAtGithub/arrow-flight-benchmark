@@ -65,7 +65,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
       const arrow::fs::FileInfo& file_info) {
     std::shared_ptr<arrow::Schema> schema = arrow::schema({});
     // std::string path = "file://" + file_info.dir_name();
-    auto descriptor = arrow::flight::FlightDescriptor::Path({file_info.path();});
+    auto descriptor = arrow::flight::FlightDescriptor::Path({file_info.path()});
 
     arrow::flight::FlightEndpoint endpoint;
     endpoint.ticket.ticket = path;
