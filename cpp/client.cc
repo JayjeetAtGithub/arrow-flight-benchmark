@@ -39,7 +39,6 @@ int main(int argc, char *argv[]) {
   std::cout << flight_info->descriptor().ToString() << std::endl;
 
   // Read table from flight server
-  std::cout << "Reading table from flight server..." << std::endl;
   std::unique_ptr<arrow::flight::FlightStreamReader> stream;
   client->DoGet(flight_info->endpoints()[0].ticket, &stream);
   std::shared_ptr<arrow::Table> table;
