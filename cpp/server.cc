@@ -40,7 +40,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
 
     arrow::dataset::FileSystemFactoryOptions options;
     ARROW_ASSIGN_OR_RAISE(auto factory, 
-      arrow::dataset::FileSystemFactory::Make(std::move(fs), s, std::move(format), options));
+      arrow::dataset::FileSystemDatasetFactory::Make(std::move(fs), s, std::move(format), options));
     arrow::dataset::FinishOptions finish_options;
     ARROW_ASSIGN_OR_RAISE(auto dataset,factory->Finish(finish_options));
 
