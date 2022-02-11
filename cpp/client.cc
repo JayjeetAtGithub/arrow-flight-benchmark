@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
   // Connect to flight server
   auto client = ConnectToFlightServer(info).ValueOrDie();
-  auto descriptor = arrow::flight::FlightDescriptor::Path({"/users/noobjc/cse210a-project/cpp/flight_datasets"});
+  auto descriptor = arrow::flight::FlightDescriptor::Path({argv[3]});
 
   // Get flight info
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
