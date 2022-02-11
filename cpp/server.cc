@@ -34,11 +34,22 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
     ARROW_ASSIGN_OR_RAISE(auto factory,
       arrow::dataset::FileSystemDatasetFactory::Make(request.ticket, format, options));
+    
+    std::cerr << "Dataset path 1: " << request.ticket;
+
     arrow::dataset::FinishOptions finish_options{};
     ARROW_ASSIGN_OR_RAISE(auto dataset, factory->Finish(finish_options));
+    std::cerr << "Dataset path 2: " << request.ticket;
+
     ARROW_ASSIGN_OR_RAISE(auto scanner_builder, dataset->NewScan());
+      std::cerr << "Dataset path 3: " << request.ticket;
+
     ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
+        std::cerr << "Dataset path 4: " << request.ticket;
+
     ARROW_ASSIGN_OR_RAISE(auto table, scanner->ToTable());
+        std::cerr << "Dataset path 5: " << request.ticket;
+
 
     std::vector<std::shared_ptr<arrow::RecordBatch>> batches;
     arrow::TableBatchReader batch_reader(*table);
