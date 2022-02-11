@@ -2,6 +2,7 @@
 
 #include <arrow/api.h>
 #include <arrow/dataset/api.h>
+#include <arrow/dataset/file_parquet.h>
 #include <arrow/flight/api.h>
 #include <arrow/filesystem/api.h>
 #include <arrow/ipc/api.h>
