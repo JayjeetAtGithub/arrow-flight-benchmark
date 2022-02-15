@@ -80,15 +80,34 @@ package cse210a;/*
 //}
 
 
+import org.apache.arrow.dataset.file.FileFormat;
+import org.apache.arrow.dataset.file.FileSystemDatasetFactory;
+import org.apache.arrow.dataset.jni.NativeMemoryPool;
+import org.apache.arrow.dataset.scanner.ScanOptions;
+import org.apache.arrow.dataset.scanner.Scanner;
+import org.apache.arrow.dataset.source.Dataset;
 import org.apache.arrow.flight.*;
 import org.apache.arrow.flight.impl.Flight;
+import org.apache.arrow.memory.ArrowBuf;
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.memory.RootAllocator;
+import org.apache.arrow.util.AutoCloseables;
+import org.apache.arrow.vector.VectorLoader;
+import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.dictionary.Dictionary;
+import org.apache.arrow.vector.dictionary.DictionaryProvider;
+import org.apache.arrow.vector.ipc.message.ArrowRecordBatch;
 import org.apache.arrow.vector.types.pojo.Schema;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.stream.StreamSupport.stream;
 
 class ParquetStorageService{
 
@@ -107,12 +126,51 @@ class ParquetStorageService{
             @Override
             public void getStream(CallContext callContext, Ticket ticket, ServerStreamListener serverStreamListener) {
 //                String path=;
+                BufferAllocator allocator=new RootAllocator(Long.MAX_VALUE);
+                FileSystemDatasetFactory factory=new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET,ticket.getBytes().toString());
+                Dataset dataset= factory.finish();
+                ScanOptions options= new ScanOptions(1024*1024);
+                Scanner scanner= dataset.newScan(options);
+                final List<ArrowRecordBatch> ret = stream(scanner.scan())
+                        .flatMap(t -> stream(t.execute()))
+                        .collect(Collectors.toList());
+                try {
+                    AutoCloseables.close(scanner, dataset);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+
+                try (VectorSchemaRoot root = VectorSchemaRoot.create(scanner.schema(), allocator)) {
+                    DictionaryProvider dictionaryProvider=new DictionaryProvider() {
+                        @Override
+                        public Dictionary lookup(long l) {
+                            return null;
+                        }
+                    };
+                    serverStreamListener.start(root, dictionaryProvider);
+                    final VectorLoader loader = new VectorLoader(root);
+                    int counter = 0;
+                    for (ArrowRecordBatch batch : ret) {
+                        final byte[] rawMetadata = Integer.toString(counter).getBytes(StandardCharsets.UTF_8);
+                        final ArrowBuf metadata = allocator.buffer(rawMetadata.length);
+                        metadata.writeBytes(rawMetadata);
+                        loader.load(batch);
+                        // Transfers ownership of the buffer - do not free buffer ourselves
+                        serverStreamListener.putNext(metadata);
+                        counter++;
+                    }
+                    serverStreamListener.completed();
+                } catch (Exception ex) {
+                    serverStreamListener.error(ex);
+                }
             }
 
             @Override
             public void listFlights(CallContext context, Criteria criteria, StreamListener<FlightInfo> listener) {
 
             }
+
 
             @Override
             public FlightInfo getFlightInfo(CallContext callContext, FlightDescriptor flightDescriptor) {
@@ -156,7 +214,26 @@ class ParquetStorageService{
 
 
 
+
+
     }
+
+    protected <T> Stream<T> stream(Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false);
+    }
+
+    protected <T> List<T> collect(Iterable<T> iterable) {
+        return stream(iterable).collect(Collectors.toList());
+    }
+
+    protected <T> Stream<T> stream(Iterator<T> iterator) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
+    }
+
+    protected <T> List<T> collect(Iterator<T> iterator) {
+        return stream(iterator).collect(Collectors.toList());
+    }
+
 
 
 
