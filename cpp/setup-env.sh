@@ -39,4 +39,4 @@ cmake -DARROW_PARQUET=ON \
   -DPARQUET_BUILD_EXAMPLES=ON \
   ..
 
-make -j4 install
+make -j$(nproc) install
