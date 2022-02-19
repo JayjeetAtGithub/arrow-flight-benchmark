@@ -1,5 +1,9 @@
 package cse210a;
 
+import org.apache.arrow.dataset.file.FileFormat;
+import org.apache.arrow.dataset.file.FileSystemDatasetFactory;
+import org.apache.arrow.dataset.jni.NativeMemoryPool;
+import org.apache.arrow.dataset.source.Dataset;
 import org.apache.arrow.flight.FlightClient;
 import org.apache.arrow.flight.FlightDescriptor;
 import org.apache.arrow.flight.FlightInfo;
@@ -46,16 +50,20 @@ class Client {
         final String path = cmd.getOptionValue("file", "/mnt/data/flight_dataset");
 
         BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-        FlightDescriptor flightDescriptor = FlightDescriptor.path(path);
-        Location location = Location.forGrpcInsecure(host, port);
-        FlightClient flightClient = FlightClient.builder(allocator, location).build();
-        System.out.println("Connected to " + flightClient.toString());
+        FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "file:///mnt/data/flight_dataset");
+        Dataset dataset = factory.finish();
 
-        FlightInfo flightInfo = flightClient.getInfo(flightDescriptor);
-        System.out.println(flightInfo.toString());
-
-        FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
-        System.out.println("Schema: " + flightStream.getSchema());
+//        BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+//        FlightDescriptor flightDescriptor = FlightDescriptor.path(path);
+//        Location location = Location.forGrpcInsecure(host, port);
+//        FlightClient flightClient = FlightClient.builder(allocator, location).build();
+//        System.out.println("Connected to " + flightClient.toString());
+//
+//        FlightInfo flightInfo = flightClient.getInfo(flightDescriptor);
+//        System.out.println(flightInfo.toString());
+//
+//        FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
+//        System.out.println("Schema: " + flightStream.getSchema());
     }
 }
 
