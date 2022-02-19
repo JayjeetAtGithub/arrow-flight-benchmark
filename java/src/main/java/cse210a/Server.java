@@ -60,9 +60,12 @@ class ParquetStorageService {
         this.flightProducer = new FlightProducer() {
             @Override
             public void getStream(CallContext callContext, Ticket ticket, ServerStreamListener serverStreamListener) {
+                System.out.println("Called getStream");
                 BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
                 FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "/Users/jayjeetchakraborty/flight_datasets");
                 Dataset dataset = factory.finish();
+                System.out.println("Created dataset");
+
                 ScanOptions options = new ScanOptions(1024 * 1024);
                 Scanner scanner = dataset.newScan(options);
                 final List<ArrowRecordBatch> arrowRecordBatches = stream(scanner.scan())
