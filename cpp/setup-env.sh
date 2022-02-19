@@ -23,7 +23,7 @@ git pull
 
 mkdir -p cpp/release
 cd cpp/release
-git checkout apache-arrow-6.0.0
+git checkout apache-arrow-6.0.1
 
 cmake -DARROW_PARQUET=ON \
   -DARROW_WITH_SNAPPY=ON \
