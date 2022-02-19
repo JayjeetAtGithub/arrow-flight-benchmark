@@ -43,7 +43,7 @@ class Client {
         }
         final String host = cmd.getOptionValue("host", "localhost");
         final int port = Integer.parseInt(cmd.getOptionValue("port", "33005"));
-        final String path = cmd.getOptionValue("path", "/Users/jayjeetchakraborty/flight_datasets");
+        final String path = cmd.getOptionValue("path", "/mnt/data/flight_datasets");
 
         BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
         FlightDescriptor flightDescriptor = FlightDescriptor.path(path);
