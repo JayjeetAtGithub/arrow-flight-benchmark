@@ -50,20 +50,16 @@ class Client {
         final String path = cmd.getOptionValue("file", "/mnt/data/flight_dataset");
 
         BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-        FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "file:///mnt/data/flight_dataset/16MB.uncompressed.parquet.1");
-        Dataset dataset = factory.finish();
+        FlightDescriptor flightDescriptor = FlightDescriptor.path(path);
+        Location location = Location.forGrpcInsecure(host, port);
+        FlightClient flightClient = FlightClient.builder(allocator, location).build();
+        System.out.println("Connected to " + flightClient.toString());
 
-//        BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-//        FlightDescriptor flightDescriptor = FlightDescriptor.path(path);
-//        Location location = Location.forGrpcInsecure(host, port);
-//        FlightClient flightClient = FlightClient.builder(allocator, location).build();
-//        System.out.println("Connected to " + flightClient.toString());
-//
-//        FlightInfo flightInfo = flightClient.getInfo(flightDescriptor);
-//        System.out.println(flightInfo.toString());
-//
-//        FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
-//        System.out.println("Schema: " + flightStream.getSchema());
+        FlightInfo flightInfo = flightClient.getInfo(flightDescriptor);
+        System.out.println(flightInfo.toString());
+
+        FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
+        System.out.println("Schema: " + flightStream.getSchema());
     }
 }
 
