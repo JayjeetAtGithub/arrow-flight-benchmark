@@ -177,6 +177,7 @@ public class Server {
             cmd = parser.parse(options, args);
         } catch (org.apache.commons.cli.ParseException e) {
             helper.printHelp("Usage: ", options);
+            System.exit(0);
         }
         final String host = cmd.getOptionValue("host", "localhost");
         final int port = Integer.parseInt(cmd.getOptionValue("port", "33005"));
