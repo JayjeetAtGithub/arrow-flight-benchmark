@@ -50,7 +50,7 @@ class Client {
         final String path = cmd.getOptionValue("file", "/mnt/data/flight_dataset");
 
         BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-        FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "/mnt/data/flight_dataset");
+        FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "file:/mnt/data/flight_dataset");
         Dataset dataset = factory.finish();
 
 //        BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
