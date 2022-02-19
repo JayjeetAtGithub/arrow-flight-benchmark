@@ -7,23 +7,39 @@ import org.apache.arrow.flight.FlightStream;
 import org.apache.arrow.flight.Location;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.memory.RootAllocator;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 
 class Client {
     public static void main(String[] args) {
         Options options = new Options();
-        options.addOption("host", true, "The host where the server runs.");
-        options.addOption("port", true, "The port to listen on.");
-        options.addOption("path", "The path to read the dataset from.");
+        Option hostConfig = Option.builder("h").longOpt("host")
+                .argName("host")
+                .hasArg()
+                .required(true)
+                .desc("The hostname to listen on").build();
+        options.addOption(hostConfig);
+        Option portConfig = Option.builder("p").longOpt("port")
+                .argName("port")
+                .hasArg()
+                .required(true)
+                .desc("The port to listen on").build();
+        options.addOption(portConfig);
+        Option fileConfig = Option.builder("f").longOpt("file")
+                .argName("file")
+                .hasArg()
+                .required(true)
+                .desc("The dataset path to read from").build();
+        options.addOption(fileConfig);
+
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
+        HelpFormatter helper = new HelpFormatter();
+
         try {
-            cmd = parser.parse(options, args, false);
+            cmd = parser.parse(options, args);
         } catch (org.apache.commons.cli.ParseException e) {
-            e.printStackTrace();
+            helper.printHelp("Usage: ", options);
+            System.exit(0);
         }
         final String host = cmd.getOptionValue("host", "localhost");
         final int port = Integer.parseInt(cmd.getOptionValue("port", "33005"));
