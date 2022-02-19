@@ -2,4 +2,3 @@
 set -ex
 
 mvn clean install
-mvn package
