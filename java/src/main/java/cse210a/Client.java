@@ -60,6 +60,13 @@ class Client {
 
         FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
         System.out.println("Schema: " + flightStream.getSchema());
+
+
+        try {
+            flightStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
