@@ -19,10 +19,8 @@ import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.Field;
 import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.Schema;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -158,14 +156,16 @@ class ParquetStorageService {
 public class Server {
     public static void main(String args[]) {
         Options options = new Options();
-        options.addOption("host", true, "The host where the server runs.");
-        options.addOption("port", true, "The port to listen on.");
+        options.addOption("h", true, "The host where the server runs.");
+        options.addOption("p", true, "The port to listen on.");
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
+        HelpFormatter helper = new HelpFormatter();
+
         try {
-            cmd = parser.parse(options, args, false);
+            cmd = parser.parse(options, args);
         } catch (org.apache.commons.cli.ParseException e) {
-            e.printStackTrace();
+            helper.printHelp("Usage: ", options);
         }
         final String host = cmd.getOptionValue("host", "localhost");
         final int port = Integer.parseInt(cmd.getOptionValue("port", "33005"));
