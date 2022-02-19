@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-apt update 
+apt update
 apt install -y python3 \
                python3-pip \
                python3-venv \
@@ -23,6 +23,7 @@ git pull
 
 mkdir -p cpp/release
 cd cpp/release
+git checkout apache-arrow-6.0.0
 
 cmake -DARROW_PARQUET=ON \
   -DARROW_WITH_SNAPPY=ON \
@@ -32,6 +33,8 @@ cmake -DARROW_PARQUET=ON \
   -DARROW_COMPUTE=ON \
   -DARROW_DATASET=ON \
   -DARROW_CSV=ON \
+  -DARROW_JAVA=ON \
+  -DARROW_JNI=ON \
   -DARROW_WITH_LZ4=ON \
   -DARROW_WITH_ZSTD=ON \
   -DARROW_FLIGHT=ON \
