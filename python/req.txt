@@ -1,1 +1,1 @@
-pyarrow==7.0.0
+pyarrow==6.0.0
