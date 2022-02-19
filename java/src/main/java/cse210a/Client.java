@@ -1,9 +1,5 @@
 package cse210a;
 
-import org.apache.arrow.dataset.file.FileFormat;
-import org.apache.arrow.dataset.file.FileSystemDatasetFactory;
-import org.apache.arrow.dataset.jni.NativeMemoryPool;
-import org.apache.arrow.dataset.source.Dataset;
 import org.apache.arrow.flight.FlightClient;
 import org.apache.arrow.flight.FlightDescriptor;
 import org.apache.arrow.flight.FlightInfo;
@@ -11,6 +7,9 @@ import org.apache.arrow.flight.FlightStream;
 import org.apache.arrow.flight.Location;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.memory.RootAllocator;
+import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.VectorUnloader;
+import org.apache.arrow.vector.ipc.message.ArrowRecordBatch;
 import org.apache.commons.cli.*;
 
 class Client {
@@ -61,6 +60,12 @@ class Client {
         FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
         System.out.println("Schema: " + flightStream.getSchema());
 
+        VectorSchemaRoot root = flightStream.getRoot();
+        VectorUnloader unloader = new VectorUnloader(root);
+        while (flightStream.next()) {
+            ArrowRecordBatch batch = unloader.getRecordBatch();
+            System.out.println(batch.toString());
+        }
 
         try {
             flightStream.close();
