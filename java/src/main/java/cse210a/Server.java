@@ -62,7 +62,7 @@ class ParquetStorageService {
             public void getStream(CallContext callContext, Ticket ticket, ServerStreamListener serverStreamListener) {
                 System.out.println("Called getStream");
                 BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-                FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "/Users/jayjeetchakraborty/flight_datasets");
+                FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "/mnt/data/flight_datasets");
                 Dataset dataset = factory.finish();
                 System.out.println("Created dataset");
 
