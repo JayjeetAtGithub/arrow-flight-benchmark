@@ -73,11 +73,6 @@ class ParquetStorageService {
                 final List<ArrowRecordBatch> arrowRecordBatches = stream(scanner.scan())
                         .flatMap(t -> stream(t.execute()))
                         .collect(Collectors.toList());
-                try {
-                    AutoCloseables.close(scanner, dataset);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
 
                 try (VectorSchemaRoot root = VectorSchemaRoot.create(scanner.schema(), allocator)) {
                     DictionaryProvider dictionaryProvider = new DictionaryProvider() {
@@ -100,6 +95,12 @@ class ParquetStorageService {
                     serverStreamListener.completed();
                 } catch (Exception ex) {
                     serverStreamListener.error(ex);
+                }
+
+                try {
+                    AutoCloseables.close(scanner, dataset);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
 
