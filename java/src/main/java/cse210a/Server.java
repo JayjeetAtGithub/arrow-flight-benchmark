@@ -156,8 +156,19 @@ class ParquetStorageService {
 public class Server {
     public static void main(String args[]) {
         Options options = new Options();
-        options.addOption("h", true, "The host where the server runs.");
-        options.addOption("p", true, "The port to listen on.");
+        Option hostConfig = Option.builder("h").longOpt("host")
+                .argName("host")
+                .hasArg()
+                .required(true)
+                .desc("The hostname to listen on").build();
+        options.addOption(hostConfig);
+        Option portConfig = Option.builder("p").longOpt("port")
+                .argName("port")
+                .hasArg()
+                .required(true)
+                .desc("The port to listen on").build();
+        options.addOption(portConfig);
+
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
         HelpFormatter helper = new HelpFormatter();
