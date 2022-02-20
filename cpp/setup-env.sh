@@ -11,6 +11,7 @@ apt install -y python3 \
                rados-objclass-dev \
                llvm \
                default-jdk \
+               default-jre \
                maven
 
 if [ ! -d "arrow" ]; then

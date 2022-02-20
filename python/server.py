@@ -6,7 +6,7 @@ import pyarrow.dataset as ds
 
 
 class FlightServer(pa.flight.FlightServerBase):
-    def __init__(self, location="grpc://0.0.0.0:33005", **kwargs):
+    def __init__(self, location, **kwargs):
         super(FlightServer, self).__init__(location, **kwargs)
         self._location = location
         self._dataset = None
@@ -27,7 +27,8 @@ class FlightServer(pa.flight.FlightServerBase):
 
 if __name__ == '__main__':
     host = str(sys.argv[1])
-    location = flight.Location.for_grpc_tcp(host, 33005)
-    server = FlightServer()
+    port = int(sys.argv[2])
+    location = flight.Location.for_grpc_tcp(host, port)
+    server = FlightServer(location)
     print(f"Server started at: {location.uri.decode()}")
     server.serve()
