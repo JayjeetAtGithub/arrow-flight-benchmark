@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 
 #include <arrow/api.h>
 #include <arrow/flight/api.h>
@@ -6,6 +7,21 @@
 #include <arrow/ipc/api.h>
 #include <arrow/io/api.h>
 
+class MeasureExecutionTime{
+private:
+    const std::chrono::steady_clock::time_point begin;
+    const std::string caller;
+public:
+    MeasureExecutionTime(const std::string& caller):caller(caller),begin(std::chrono::steady_clock::now()){}
+    ~MeasureExecutionTime(){
+        const auto duration=std::chrono::steady_clock::now()-begin;
+        LOGD("ExecutionTime")<<"For "<<caller<<" is "<<std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()<<"ms";
+    }
+};
+
+#ifndef MEASURE_FUNCTION_EXECUTION_TIME
+#define MEASURE_FUNCTION_EXECUTION_TIME const MeasureExecutionTime measureExecutionTime(__FUNCTION__);
+#endif
 
 struct ConnectionInfo {
   std::string host;
@@ -39,9 +55,12 @@ int main(int argc, char *argv[]) {
   std::cout << flight_info->descriptor().ToString() << std::endl;
 
   // Read table from flight server
-  std::unique_ptr<arrow::flight::FlightStreamReader> stream;
-  client->DoGet(flight_info->endpoints()[0].ticket, &stream);
-  std::shared_ptr<arrow::Table> table;
-  stream->ReadAll(&table);
+  {
+    MEASURE_FUNCTION_EXECUTION_TIME
+    std::unique_ptr<arrow::flight::FlightStreamReader> stream;
+    client->DoGet(flight_info->endpoints()[0].ticket, &stream);
+    std::shared_ptr<arrow::Table> table;
+    stream->ReadAll(&table);
+  }
   std::cout << table->ToString() << std::endl;
 }
