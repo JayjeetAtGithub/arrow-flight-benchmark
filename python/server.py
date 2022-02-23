@@ -22,7 +22,7 @@ class FlightServer(pa.flight.FlightServerBase):
         return self._make_flight_info(descriptor.path[0].decode('utf-8'))
 
     def do_get(self, context, ticket):
-        return pa.flight.RecordBatchStream(self._dataset.to_table(use_threads=False))
+        return pa.flight.RecordBatchStream(self._dataset.to_table(use_threads=True))
 
 
 if __name__ == '__main__':
