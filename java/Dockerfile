@@ -15,3 +15,8 @@ RUN apt update && \
                default-jdk \
                maven && \
     apt clean
+
+ADD entrypoint /entrypoint.sh
+ADD java/ /java/
+
+ENTRYPOINT [ "/entrypoint.sh" ]
