@@ -40,6 +40,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
 
     auto fragment_scan_options = std::make_shared<ParquetFragmentScanOptions>();
     fragment_scan_options->arrow_reader_properties->set_pre_buffer(true);
+    fragment_scan_options->arrow_reader_properties->set_use_threads(true);
 
     arrow::dataset::FileSystemFactoryOptions options;
     ARROW_ASSIGN_OR_RAISE(auto factory, 
