@@ -17,6 +17,6 @@ RUN apt update && \
     apt clean
 
 ADD entrypoint.sh /entrypoint.sh
-ADD java/ /java/
+ADD . /java/
 
 ENTRYPOINT [ "/entrypoint.sh" ]
