@@ -19,3 +19,5 @@ RUN apt update && \
     apt clean && \
     cd /java && \
     mvn clean install
+
+ENTRYPOINT [ "/bin/bash" ]
