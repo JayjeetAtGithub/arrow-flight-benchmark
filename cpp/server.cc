@@ -96,6 +96,6 @@ int main(int argc, char *argv[]) {
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
       new ParquetStorageService(std::move(fs), host, port));
   server->Init(options);
-  std::cout << "Listening on port " << server->Port() << std::endl;
+  std::cout << "Listening on port " << server->port() << std::endl;
   while (1);
 }
