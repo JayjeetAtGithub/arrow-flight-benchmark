@@ -1,5 +1,7 @@
 FROM ubuntu:21.10
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt update && \
     apt install -y python3 \
                python3-pip \
