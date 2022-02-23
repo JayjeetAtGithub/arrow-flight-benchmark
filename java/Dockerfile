@@ -2,7 +2,7 @@ FROM ubuntu:21.10
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ADD . /java/
+COPY . /java/
 
 RUN apt update && \
     apt install -y python3 \
