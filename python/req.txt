@@ -1,1 +1,2 @@
 pyarrow==6.0.1
+pandas
