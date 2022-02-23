@@ -14,8 +14,10 @@
 
 class ParquetStorageService : public arrow::flight::FlightServerBase {
  public:
-  explicit ParquetStorageService(std::shared_ptr<arrow::fs::FileSystem> fs, std::string host)
-      : fs_(std::move(fs)), host_(host) {}
+  explicit ParquetStorageService(std::shared_ptr<arrow::fs::FileSystem> fs, std::string host, int32_t port)
+      : fs_(std::move(fs)), host_(host), port_(port) {}
+
+  int32_t Port() { return port_; }
 
   arrow::Status GetFlightInfo(const arrow::flight::ServerCallContext&,
                               const arrow::flight::FlightDescriptor& descriptor,
@@ -78,19 +80,22 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
   }
 
   std::shared_ptr<arrow::fs::FileSystem> fs_;
+  std::string host_;
+  int32_t port_;
 };
 
 int main(int argc, char *argv[]) {
   std::string host = argv[1];
+  int32_t port = (int32_t)std::stoi(argv[2]);
   auto fs = std::make_shared<arrow::fs::LocalFileSystem>();
 
   arrow::flight::Location server_location;
-  arrow::flight::Location::ForGrpcTcp(host, 0, &server_location);
+  arrow::flight::Location::ForGrpcTcp(host, port, &server_location);
 
   arrow::flight::FlightServerOptions options(server_location);
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
-      new ParquetStorageService(std::move(fs), host));
+      new ParquetStorageService(std::move(fs), host, port));
   server->Init(options);
-  std::cout << "Listening on port " << server->port() << std::endl;
+  std::cout << "Listening on port " << server->Port() << std::endl;
   while (1);
 }
