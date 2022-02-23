@@ -15,7 +15,7 @@ class MeasureExecutionTime{
       MeasureExecutionTime(const std::string& caller):caller(caller),begin(std::chrono::steady_clock::now()){}
       ~MeasureExecutionTime(){
           const auto duration=std::chrono::steady_clock::now()-begin;
-          std::cout << (double)std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()/1000;
+          std::cout << (double)std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()/1000<<std::endl;
       }
 };
 
@@ -35,7 +35,7 @@ arrow::Result<std::unique_ptr<arrow::flight::FlightClient>> ConnectToFlightServe
 
   std::unique_ptr<arrow::flight::FlightClient> client;
   ARROW_RETURN_NOT_OK(arrow::flight::FlightClient::Connect(location, &client));
-  std::cout << "Connected to " << location.ToString() << std::endl;
+  //std::cout << "Connected to " << location.ToString() << std::endl;
   return client;
 }
 
@@ -45,22 +45,27 @@ int main(int argc, char *argv[]) {
   info.host = argv[1];
   info.port = (int32_t)std::stoi(argv[2]);
 
-  // Connect to flight server
+   // Connect to flight server
   auto client = ConnectToFlightServer(info).ValueOrDie();
   auto descriptor = arrow::flight::FlightDescriptor::Path({argv[3]});
 
   // Get flight info
   std::unique_ptr<arrow::flight::FlightInfo> flight_info;
   client->GetFlightInfo(descriptor, &flight_info);
-  std::cout << flight_info->descriptor().ToString() << std::endl;
+  //std::cout << flight_info->descriptor().ToString() << std::endl;
 
   // Read table from flight server
   std::shared_ptr<arrow::Table> table;
+  for(int i=0;i<10;i++){
   {
     MEASURE_FUNCTION_EXECUTION_TIME
     std::unique_ptr<arrow::flight::FlightStreamReader> stream;
     client->DoGet(flight_info->endpoints()[0].ticket, &stream);
     stream->ReadAll(&table);
   }
+   
+  }
+  
+
   //std::cout << table->ToString() << std::endl;
 }
