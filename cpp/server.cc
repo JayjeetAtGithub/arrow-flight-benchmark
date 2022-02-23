@@ -14,8 +14,8 @@
 
 class ParquetStorageService : public arrow::flight::FlightServerBase {
  public:
-  explicit ParquetStorageService(std::shared_ptr<arrow::fs::FileSystem> fs)
-      : fs_(std::move(fs)) {}
+  explicit ParquetStorageService(std::shared_ptr<arrow::fs::FileSystem> fs, std::string host)
+      : fs_(std::move(fs)), host_(host) {}
 
   arrow::Status GetFlightInfo(const arrow::flight::ServerCallContext&,
                               const arrow::flight::FlightDescriptor& descriptor,
@@ -53,13 +53,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     ARROW_RETURN_NOT_OK(scanner_builder->FragmentScanOptions(fragment_scan_options));
     ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
     ARROW_ASSIGN_OR_RAISE(auto reader, scanner->ToRecordBatchReader());
-    
-    // std::vector<std::shared_ptr<arrow::RecordBatch>> batches;
-    // arrow::TableBatchReader batch_reader(*table);
-    // ARROW_RETURN_NOT_OK(batch_reader.ReadAll(&batches));
 
-    // ARROW_ASSIGN_OR_RAISE(auto owning_reader, arrow::RecordBatchReader::Make(
-    //                                               std::move(batches), table->schema()));
     *stream = std::unique_ptr<arrow::flight::FlightDataStream>(
         new arrow::flight::RecordBatchStream(reader));
   
@@ -77,7 +71,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     endpoint.ticket.ticket = path;
     arrow::flight::Location location;
     ARROW_RETURN_NOT_OK(
-        arrow::flight::Location::ForGrpcTcp("localhost", port(), &location));
+        arrow::flight::Location::ForGrpcTcp(host_, port(), &location));
     endpoint.locations.push_back(location);
 
     return arrow::flight::FlightInfo::Make(*schema, descriptor, {endpoint}, 0, 0);
@@ -95,7 +89,7 @@ int main(int argc, char *argv[]) {
 
   arrow::flight::FlightServerOptions options(server_location);
   auto server = std::unique_ptr<arrow::flight::FlightServerBase>(
-      new ParquetStorageService(std::move(fs)));
+      new ParquetStorageService(std::move(fs), host));
   server->Init(options);
   std::cout << "Listening on port " << server->port() << std::endl;
   while (1);
