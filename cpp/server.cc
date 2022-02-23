@@ -45,7 +45,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     ARROW_ASSIGN_OR_RAISE(auto dataset,factory->Finish(finish_options));
 
     ARROW_ASSIGN_OR_RAISE(auto scanner_builder, dataset->NewScan());
-    ARROW_RETURN_NOT_OK(scanner_builder->UseThreads(false));
+    ARROW_RETURN_NOT_OK(scanner_builder->UseThreads(true));
     ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
     ARROW_ASSIGN_OR_RAISE(auto table, scanner->ToTable());
 
