@@ -38,7 +38,7 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     s.base_dir = std::move(path);
     s.recursive = true;
 
-    auto fragment_scan_options = std::make_shared<ParquetFragmentScanOptions>();
+    auto fragment_scan_options = std::make_shared<arrow::dataset::ParquetFragmentScanOptions>();
     fragment_scan_options->arrow_reader_properties->set_pre_buffer(true);
     fragment_scan_options->arrow_reader_properties->set_use_threads(true);
 
