@@ -21,5 +21,5 @@ if __name__ == "__main__":
         reader = client.do_get(flight_info.endpoints[0].ticket)
         read_table = reader.read_all()
         e = time.time()
-        # print(read_table.to_pandas())
+        #print(read_table.to_pandas())
         print(e - s)
