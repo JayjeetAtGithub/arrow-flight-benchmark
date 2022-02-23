@@ -62,5 +62,5 @@ int main(int argc, char *argv[]) {
     client->DoGet(flight_info->endpoints()[0].ticket, &stream);
     stream->ReadAll(&table);
   }
-  std::cout << table->ToString() << std::endl;
+  //std::cout << table->ToString() << std::endl;
 }
