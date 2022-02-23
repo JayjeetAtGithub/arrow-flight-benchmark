@@ -15,10 +15,10 @@ apt install -y python3 \
                maven
 
 if [ ! -d "arrow" ]; then
-    git clone https://github.com/apache/arrow
+    git clone https://github.com/apache/arrow /tmp/arrow
 fi
 
-cd arrow
+cd /tmp/arrow
 git submodule update --init --recursive
 git pull
 
