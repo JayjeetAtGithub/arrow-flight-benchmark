@@ -1,8 +1,7 @@
-#!/bin/bash
-set -ex
+FROM ubuntu:21.10
 
-apt update 
-apt install -y python3 \
+RUN apt update && \
+    apt install -y python3 \
                python3-pip \
                python3-venv \
                python3-numpy \
@@ -12,6 +11,5 @@ apt install -y python3 \
                libthrift-dev \
                default-jre \
                default-jdk \
-               maven
-
-# ln -s libre2.so libre2.so.9
+               maven && \
+    apt clean
