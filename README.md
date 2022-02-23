@@ -12,7 +12,7 @@ cd cpp
 ./setup-env.sh
 make
 
-./server [host] 
+./server [host] [port]
 ./client [host] [port] [dataset path]
 ```
 
