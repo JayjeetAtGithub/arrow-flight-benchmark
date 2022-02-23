@@ -57,15 +57,12 @@ int main(int argc, char *argv[]) {
   // Read table from flight server
   std::shared_ptr<arrow::Table> table;
   for(int i=0;i<10;i++){
-  {
-    MEASURE_FUNCTION_EXECUTION_TIME
-    std::unique_ptr<arrow::flight::FlightStreamReader> stream;
-    client->DoGet(flight_info->endpoints()[0].ticket, &stream);
-    stream->ReadAll(&table);
+    {
+      MEASURE_FUNCTION_EXECUTION_TIME
+      std::unique_ptr<arrow::flight::FlightStreamReader> stream;
+      client->DoGet(flight_info->endpoints()[0].ticket, &stream);
+      stream->ReadAll(&table);
+    }
   }
-   
-  }
-  
-
   //std::cout << table->ToString() << std::endl;
 }
