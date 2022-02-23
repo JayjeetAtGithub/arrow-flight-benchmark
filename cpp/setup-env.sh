@@ -44,3 +44,5 @@ cmake -DARROW_PARQUET=ON \
   ..
 
 make -j$(nproc) install
+
+cp -r /usr/local/lib/* /usr/lib/
