@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
   // Read table from flight server
   std::shared_ptr<arrow::Table> table;
-  for(int i=0;i<10;i++){
+  for(int i=0;i<1;i++){
     {
       MEASURE_FUNCTION_EXECUTION_TIME
       std::unique_ptr<arrow::flight::FlightStreamReader> stream;
