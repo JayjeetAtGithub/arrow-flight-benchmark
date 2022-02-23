@@ -47,16 +47,16 @@ class ParquetStorageService : public arrow::flight::FlightServerBase {
     ARROW_ASSIGN_OR_RAISE(auto scanner_builder, dataset->NewScan());
     ARROW_RETURN_NOT_OK(scanner_builder->UseThreads(true));
     ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
-    ARROW_ASSIGN_OR_RAISE(auto table, scanner->ToTable());
+    ARROW_ASSIGN_OR_RAISE(auto reader, scanner->ToRecordBatchReader());
+    
+    // std::vector<std::shared_ptr<arrow::RecordBatch>> batches;
+    // arrow::TableBatchReader batch_reader(*table);
+    // ARROW_RETURN_NOT_OK(batch_reader.ReadAll(&batches));
 
-    std::vector<std::shared_ptr<arrow::RecordBatch>> batches;
-    arrow::TableBatchReader batch_reader(*table);
-    ARROW_RETURN_NOT_OK(batch_reader.ReadAll(&batches));
-
-    ARROW_ASSIGN_OR_RAISE(auto owning_reader, arrow::RecordBatchReader::Make(
-                                                  std::move(batches), table->schema()));
+    // ARROW_ASSIGN_OR_RAISE(auto owning_reader, arrow::RecordBatchReader::Make(
+    //                                               std::move(batches), table->schema()));
     *stream = std::unique_ptr<arrow::flight::FlightDataStream>(
-        new arrow::flight::RecordBatchStream(owning_reader));
+        new arrow::flight::RecordBatchStream(reader));
   
     return arrow::Status::OK();
   }
