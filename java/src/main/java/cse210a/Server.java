@@ -65,13 +65,12 @@ class ParquetStorageService {
                 Dataset dataset = factory.finish();
 
                 ScanOptions options = new ScanOptions(1024 * 1024);
-//                Scanner scanner = dataset.newScan(options);
+                Scanner scanner = dataset.newScan(options);
 
                 List<ArrowRecordBatch> resultBatches = new ArrayList<>();
                 List<ArrowRecordBatch> arrowRecordBatches = null;
-                Scanner scanner = null;
                 for (int i = 0; i < 100; i++) {
-                    scanner = dataset.newScan(options);
+                    System.out.println("Reading scanner");
                     arrowRecordBatches = stream(scanner.scan())
                             .flatMap(t -> stream(t.execute()))
                             .collect(Collectors.toList());
@@ -88,7 +87,7 @@ class ParquetStorageService {
                     serverStreamListener.start(root, dictionaryProvider);
                     final VectorLoader loader = new VectorLoader(root);
                     int counter = 0;
-                    for (ArrowRecordBatch batch : arrowRecordBatches) {
+                    for (ArrowRecordBatch batch : resultBatches) {
                         final byte[] rawMetadata = Integer.toString(counter).getBytes(StandardCharsets.UTF_8);
                         final ArrowBuf metadata = allocator.buffer(rawMetadata.length);
                         metadata.writeBytes(rawMetadata);
