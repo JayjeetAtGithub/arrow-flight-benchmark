@@ -27,12 +27,14 @@ python3 client.py [host] [port] [dataset path]
 ```
 
 ## Java
-
 ```bash
-cd java
-./setup-env.sh
-./bat.sh
+curl -o- https://get.docker.com | bash
+cd java/
+docker build -t bench .
 
-cd target
-java -jar server.jar-with-dependencies.jar -h [host] -p [port]
-java -jar client.jar-with-dependencies.jar -f [file path] -h [host] -p [port]
+# In server node
+./run_server.sh
+
+# In client node
+./run_client.sh
+```
