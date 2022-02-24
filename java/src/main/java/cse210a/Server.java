@@ -74,6 +74,7 @@ class ParquetStorageService {
                 System.err.println("Reading scanner 3 ");
 
                 for (int i = 0; i < 100; i++) {
+                    scanner = dataset.newScan(options);
                     System.err.println("Reading scanner 2");
                     arrowRecordBatches = stream(scanner.scan())
                             .flatMap(t -> stream(t.execute()))
