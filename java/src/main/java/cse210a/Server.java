@@ -63,22 +63,22 @@ class ParquetStorageService {
                 BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
                 FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "file:///mnt/data/flight_dataset/16MB.uncompressed.parquet.1");
                 Dataset dataset = factory.finish();
-
+                Schema schema = factory.inspect();
                 ScanOptions options = new ScanOptions(1024 * 1024);
-                Scanner scanner = dataset.newScan(options);
 
                 List<ArrowRecordBatch> resultBatches = new ArrayList<>();
                 List<ArrowRecordBatch> arrowRecordBatches = null;
 
+                Scanner scanner = null;
                 for (int i = 0; i < 100; i++) {
-//                    scanner = dataset.newScan(options);
+                    scanner = dataset.newScan(options);
                     arrowRecordBatches = stream(scanner.scan())
                             .flatMap(t -> stream(t.execute()))
                             .collect(Collectors.toList());
-                      resultBatches.addAll(arrowRecordBatches);
+                    resultBatches.addAll(arrowRecordBatches);
                 }
 
-                try (VectorSchemaRoot root = VectorSchemaRoot.create(scanner.schema(), allocator)) {
+                try (VectorSchemaRoot root = VectorSchemaRoot.create(schema, allocator)) {
                     DictionaryProvider dictionaryProvider = new DictionaryProvider() {
                         @Override
                         public Dictionary lookup(long l) {
