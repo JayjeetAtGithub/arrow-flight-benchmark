@@ -68,7 +68,7 @@ class ParquetStorageService {
                 Scanner scanner = dataset.newScan(options);
 
                 List<ArrowRecordBatch> resultBatches = new ArrayList<>();
-                List<ArrowRecordBatch> arrowRecordBatches;
+                List<ArrowRecordBatch> arrowRecordBatches = new ArrayList<>();
                 for (int i = 0; i < 100; i++) {
                       arrowRecordBatches = stream(scanner.scan())
                             .flatMap(t -> stream(t.execute()))
