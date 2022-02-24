@@ -51,26 +51,29 @@ class Client {
         BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
         FlightDescriptor flightDescriptor = FlightDescriptor.path(path);
         Location location = Location.forGrpcInsecure(host, port);
-        FlightClient flightClient = FlightClient.builder(allocator, location).build();
-        System.out.println("Connected to " + flightClient.toString());
 
-        FlightInfo flightInfo = flightClient.getInfo(flightDescriptor);
-        System.out.println(flightInfo.toString());
+        for (int i = 0; i < 10; i++) {
+            FlightClient flightClient = FlightClient.builder(allocator, location).build();
+//            System.out.println("Connected to " + flightClient.toString());
 
-        FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
-        System.out.println("Schema: " + flightStream.getSchema());
+            FlightInfo flightInfo = flightClient.getInfo(flightDescriptor);
 
-        VectorSchemaRoot root = flightStream.getRoot();
-        VectorUnloader unloader = new VectorUnloader(root);
-        while (flightStream.next()) {
-            ArrowRecordBatch batch = unloader.getRecordBatch();
-            System.out.println(batch.toString());
-        }
+            long start = System.currentTimeMillis();
+            FlightStream flightStream = flightClient.getStream(flightInfo.getEndpoints().get(0).getTicket());
+            VectorSchemaRoot root = flightStream.getRoot();
+            VectorUnloader unloader = new VectorUnloader(root);
+            while (flightStream.next()) {
+                ArrowRecordBatch batch = unloader.getRecordBatch();
+                System.out.println(batch.getLength());
+            }
+            long duration = System.currentTimeMillis() - start;
+            System.out.println(Double.valueOf(duration/1000));
 
-        try {
-            flightStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                flightStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
