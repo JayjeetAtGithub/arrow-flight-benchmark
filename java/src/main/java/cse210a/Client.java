@@ -67,7 +67,7 @@ class Client {
                 System.out.println(batch.getLength());
             }
             long duration = System.currentTimeMillis() - start;
-            System.out.println(Double.valueOf(duration/1000));
+            System.out.println("Time: " + String.valueOf(Double.valueOf(duration/1000)));
 
             try {
                 flightStream.close();
