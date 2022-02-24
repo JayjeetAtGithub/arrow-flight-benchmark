@@ -103,7 +103,7 @@ class ParquetStorageService {
 
                 try {
                     AutoCloseables.close(arrowRecordBatches);
-                    AutoCloseables.close(factory, scanner, dataset);
+                    AutoCloseables.close(allocator, factory, scanner, dataset);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
