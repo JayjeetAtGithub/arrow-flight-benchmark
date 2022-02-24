@@ -60,6 +60,7 @@ class ParquetStorageService {
         this.flightProducer = new FlightProducer() {
             @Override
             public void getStream(CallContext callContext, Ticket ticket, ServerStreamListener serverStreamListener) {
+                System.err.println("getStream called");
                 BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
                 FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "file:///mnt/data/flight_dataset/16MB.uncompressed.parquet.1");
                 Dataset dataset = factory.finish();
