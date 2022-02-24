@@ -2,8 +2,6 @@ FROM ubuntu:21.10
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-COPY . /java/
-
 RUN apt update && \
     apt install -y python3 \
                python3-pip \
@@ -16,8 +14,4 @@ RUN apt update && \
                default-jre \
                default-jdk \
                maven && \
-    apt clean && \
-    cd /java && \
-    mvn clean install
-
-ENTRYPOINT [ "/bin/bash" ]
+    apt clean
