@@ -61,7 +61,8 @@ class ParquetStorageService {
             @Override
             public void getStream(CallContext callContext, Ticket ticket, ServerStreamListener serverStreamListener) {
                 BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
-                FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, NativeMemoryPool.getDefault(), FileFormat.PARQUET, "file:///mnt/data/flight_dataset/16MB.uncompressed.parquet.1");
+                NativeMemoryPool nativeMemoryPool = NativeMemoryPool.getDefault();
+                FileSystemDatasetFactory factory = new FileSystemDatasetFactory(allocator, nativeMemoryPool, FileFormat.PARQUET, "file:///mnt/data/flight_dataset/16MB.uncompressed.parquet.1");
                 Dataset dataset = factory.finish();
                 Schema schema = factory.inspect();
                 ScanOptions options = new ScanOptions(1024 * 1024);
@@ -99,6 +100,12 @@ class ParquetStorageService {
                     serverStreamListener.completed();
                 } catch (Exception ex) {
                     serverStreamListener.error(ex);
+                }
+
+                try {
+                    nativeMemoryPool.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 try {
