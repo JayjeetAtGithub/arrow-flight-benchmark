@@ -66,10 +66,16 @@ class ParquetStorageService {
 
                 ScanOptions options = new ScanOptions(1024 * 1024);
                 Scanner scanner = dataset.newScan(options);
-                final List<ArrowRecordBatch> arrowRecordBatches = stream(scanner.scan())
-                        .flatMap(t -> stream(t.execute()))
-                        .collect(Collectors.toList());
 
+                List<ArrowRecordBatch> resultBatches = new ArrayList<>();
+
+                for (int i = 0; i < 100; i++) {
+                    final List<ArrowRecordBatch> arrowRecordBatches = stream(scanner.scan())
+                            .flatMap(t -> stream(t.execute()))
+                            .collect(Collectors.toList());
+                    resultBatches.addAll(arrowRecordBatches);
+                }
+                
                 try (VectorSchemaRoot root = VectorSchemaRoot.create(scanner.schema(), allocator)) {
                     DictionaryProvider dictionaryProvider = new DictionaryProvider() {
                         @Override
