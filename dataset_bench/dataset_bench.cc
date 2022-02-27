@@ -12,7 +12,8 @@
 #include "parquet/arrow/writer.h"
 #include "parquet/file_reader.h"
 
-int main(int argc, char** argv) {
+
+arrow::Result<std::shared_ptr<arrow::Table>> Scan() {
     std::string path;
     ARROW_ASSIGN_OR_RAISE(auto fs, arrow::fs::FileSystemFromUri("/mnt/data/flight_dataset", &path)); 
     auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
@@ -36,6 +37,18 @@ int main(int argc, char** argv) {
     ARROW_RETURN_NOT_OK(scanner_builder->FragmentScanOptions(fragment_scan_options));
     ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
     ARROW_ASSIGN_OR_RAISE(auto table, scanner->ToTable());
-    std::cout << "Table: " << table->ToString() << std::endl;
+    return table;
+}
+
+int main(int argc, char** argv) {
+    // time start
+    auto start = std::chrono::high_resolution_clock::now();
+    // scan
+    auto table = Scan().ValueOrDie();
+    std::cout << table.num_rows() << std::endl;
+    // time end
+    auto end = std::chrono::high_resolution_clock::now();
+    // print time
+    std::cout << "time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
     return 0;
 }
