@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     auto start = std::chrono::high_resolution_clock::now();
     // scan
     auto table = Scan().ValueOrDie();
-    std::cout << table.num_rows() << std::endl;
+    std::cout << table.num_rows << std::endl;
     // time end
     auto end = std::chrono::high_resolution_clock::now();
     // print time
