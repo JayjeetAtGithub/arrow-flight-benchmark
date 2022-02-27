@@ -15,7 +15,7 @@
 
 arrow::Result<std::shared_ptr<arrow::Table>> Scan() {
     std::string path;
-    ARROW_ASSIGN_OR_RAISE(auto fs, arrow::fs::FileSystemFromUri("/mnt/data/flight_dataset", &path)); 
+    ARROW_ASSIGN_OR_RAISE(auto fs, arrow::fs::FileSystemFromUri("file:///mnt/data/flight_dataset", &path)); 
     auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
 
     arrow::fs::FileSelector s;
