@@ -36,14 +36,15 @@ arrow::Result<std::shared_ptr<arrow::Table>> Scan() {
 }
 
 int main(int argc, char** argv) {
-    // time start
-    auto start = std::chrono::high_resolution_clock::now();
-    // scan
-    auto table = Scan().ValueOrDie();
-    std::cout << table->num_rows() << std::endl;
-    // time end
-    auto end = std::chrono::high_resolution_clock::now();
-    // print time
-    std::cout << "time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+    for (int i = 0; i < 10; i++) {
+        // time start
+        auto start = std::chrono::high_resolution_clock::now();
+        // scan
+        auto table = Scan().ValueOrDie();
+        // time end
+        auto end = std::chrono::high_resolution_clock::now();
+        // print time
+        std::cout << (double)std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()/1000 << std::endl;
+    }
     return 0;
 }
