@@ -11,6 +11,5 @@ if __name__ == "__main__":
     for i in range(10):
         s = time.time()
         table = dataset_.to_table(use_threads=False)
-        print(table.num_rows)
         e = time.time()
         print(e - s)
