@@ -22,10 +22,6 @@ arrow::Result<std::shared_ptr<arrow::Table>> Scan() {
     s.base_dir = std::move(path);
     s.recursive = true;
 
-    auto fragment_scan_options = std::make_shared<arrow::dataset::ParquetFragmentScanOptions>();
-    fragment_scan_options->arrow_reader_properties->set_pre_buffer(true);
-    fragment_scan_options->arrow_reader_properties->set_use_threads(true);
-
     arrow::dataset::FileSystemFactoryOptions options;
     ARROW_ASSIGN_OR_RAISE(auto factory, 
     arrow::dataset::FileSystemDatasetFactory::Make(std::move(fs), s, std::move(format), options));
@@ -34,7 +30,6 @@ arrow::Result<std::shared_ptr<arrow::Table>> Scan() {
 
     ARROW_ASSIGN_OR_RAISE(auto scanner_builder, dataset->NewScan());
     ARROW_RETURN_NOT_OK(scanner_builder->UseThreads(false));
-    ARROW_RETURN_NOT_OK(scanner_builder->FragmentScanOptions(fragment_scan_options));
     ARROW_ASSIGN_OR_RAISE(auto scanner, scanner_builder->Finish());
     ARROW_ASSIGN_OR_RAISE(auto table, scanner->ToTable());
     return table;
