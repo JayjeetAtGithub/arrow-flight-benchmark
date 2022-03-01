@@ -1,6 +1,10 @@
 all:
 	rm -rf dataset_bench 
+	pip install pyarrow==6.0.1
 	g++ -std=c++11 dataset_bench.cc -I/usr/local/lib/python3.8/dist-packages/pyarrow/include -L/usr/local/lib/python3.8/dist-packages/pyarrow -larrow -larrow_dataset -lparquet -o dataset_bench
+
+dataset:
+	../common/deploy_dataset.sh
 
 run_cpp:
 	./dataset_bench
