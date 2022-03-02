@@ -11,7 +11,7 @@ if __name__ == "__main__":
     port = int(sys.argv[2])
     dataset_path = str(sys.argv[3])
 
-    for i in range(0, 1):
+    for i in range(0, 10):
         location = flight.Location.for_grpc_tcp(host, port)
         client = pa.flight.connect(location.uri.decode())
         flight_descriptor = pa.flight.FlightDescriptor.for_path(dataset_path)
