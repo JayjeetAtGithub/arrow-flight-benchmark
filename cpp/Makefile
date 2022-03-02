@@ -12,9 +12,9 @@ all:
 	g++ -O3 -std=c++11 server.cc -I/usr/local/lib/python3.8/dist-packages/pyarrow/include -L/usr/local/lib/python3.8/dist-packages/pyarrow -larrow -larrow_dataset -larrow_flight -lparquet -o server -D_GLIBCXX_USE_CXX11_ABI=0
 	g++ -O3 -std=c++11 client.cc -I/usr/local/lib/python3.8/dist-packages/pyarrow/include -L/usr/local/lib/python3.8/dist-packages/pyarrow -larrow -larrow_dataset -larrow_flight -lparquet -o client -D_GLIBCXX_USE_CXX11_ABI=0
 
-server:
+run_server:
 	LD_LIBRARY_PATH=/usr/local/lib/python3.8/dist-packages/pyarrow ./server 10.10.1.12 33005 
 
 
-client:
+run_client:
 	LD_LIBRARY_PATH=/usr/local/lib/python3.8/dist-packages/pyarrow ./client 10.10.1.12 33005 /mnt/data/flight_dataset
