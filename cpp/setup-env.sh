@@ -7,8 +7,6 @@ apt install -y python3 \
                python3-venv \
                python3-numpy \
                cmake \
-               libradospp-dev \
-               rados-objclass-dev \
                llvm \
                default-jdk \
                default-jre \
