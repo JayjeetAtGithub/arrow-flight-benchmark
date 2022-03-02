@@ -1,4 +1,5 @@
 all:
+	apt install python3-pip
 	rm -rf server 
 	rm -rf client
 	
