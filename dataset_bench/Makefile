@@ -7,8 +7,7 @@ dataset:
 	../common/deploy_data.sh
 
 run_cpp:
-	export LD_LIBRARY_PATH=/usr/local/lib/python3.8/dist-packages/pyarrow
-	./dataset_bench
+	LD_LIBRARY_PATH=/usr/local/lib/python3.8/dist-packages/pyarrow ./dataset_bench
 
 run_python:
 	python3 dataset_bench.py
