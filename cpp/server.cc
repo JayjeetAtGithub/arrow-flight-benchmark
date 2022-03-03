@@ -97,5 +97,5 @@ int main(int argc, char *argv[]) {
       new ParquetStorageService(std::move(fs), host, port));
   server->Init(options);
   std::cout << "Listening on port " << server->port() << std::endl;
-  while (1);
+  server->Serve();
 }
