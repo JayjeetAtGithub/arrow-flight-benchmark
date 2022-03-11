@@ -12,8 +12,11 @@ cd cpp
 ./setup-env.sh
 make
 
-./server [host] [port]
-./client [host] [port] [dataset path]
+# Run the server
+make run_server
+
+# Run the client
+make run_client
 ```
 
 ## Python
@@ -22,7 +25,10 @@ make
 cd python
 pip install -r req.txt
 
+# Run the server
 python3 server.py [host] [port]
+
+# Run the client
 python3 client.py [host] [port] [dataset path]
 ```
 
@@ -32,9 +38,9 @@ curl -o- https://get.docker.com | bash
 cd java/
 docker build -t bench .
 
-# In server node
+# Run server
 ./run_server.sh
 
-# In client node
+# Run client
 ./run_client.sh
 ```
