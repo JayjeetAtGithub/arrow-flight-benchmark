@@ -15,7 +15,7 @@ if __name__ == '__main__':
         with conn:
             print(f"Connected by {addr}")
             
-            dataset_ = ds.dataset("/mnt/cephfs/dataset", format="parquet")
+            dataset_ = ds.dataset("/mnt/cephfs/flight_dataset", format="parquet")
             reader = ds.Scanner.from_dataset(dataset_, use_threads=False).to_reader()
             num_batches = reader.num_record_batches
             for i in range(0, num_batches):
