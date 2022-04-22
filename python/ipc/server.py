@@ -18,13 +18,10 @@ if __name__ == '__main__':
             
             dataset_ = ds.dataset("/mnt/data/flight_dataset", format="parquet")
             reader = ds.Scanner.from_dataset(dataset_, use_threads=False).to_reader()
-            num_batches = reader.num_record_batches
-            for i in range(0, num_batches):
-                batch = reader.get_batch(i)
+            for batch in reader:
                 sink = pa.BufferOutputStream()
                 with pa.ipc.new_stream(sink, batch.schema) as writer:
                     writer.write_batch(batch)
                 conn.sendall(sink.getvalue().data)
-                print(f"Sent batch {i}")
 
     print("Done sending batches")
