@@ -22,6 +22,6 @@ if __name__ == '__main__':
                 sink = pa.BufferOutputStream()
                 with pa.ipc.new_stream(sink, batch.schema) as writer:
                     writer.write_batch(batch)
-                conn.sendall(sink.getvalue().data)
+                conn.sendall(sink.getvalue().to_pybytes())
 
     print("Done sending batches")
