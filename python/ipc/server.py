@@ -3,6 +3,15 @@ import socket
 import pyarrow as pa
 import pyarrow.dataset as ds
 
+MSGLEN = 1024 * 1024
+
+def mysend(msg, sock):
+    totalsent = 0
+    while totalsent < MSGLEN:
+        sent = sock.send(msg[totalsent:])
+        if sent == 0:
+            raise RuntimeError("socket connection broken")
+        totalsent = totalsent + sent
 
 if __name__ == '__main__':
     host = str(sys.argv[1])
@@ -25,6 +34,6 @@ if __name__ == '__main__':
                     writer.close()
                 buf = sink.getvalue()
                 print(buf.size)
-                conn.sendall(buf.hex())
+                mysend(buf.hex(), conn)
                 
     print("Done sending batches")

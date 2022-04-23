@@ -7,19 +7,20 @@ import pyarrow.parquet as pq
 
 import socket
 
-def recvall(sock):
-    cnt = 0
-    BUFF_SIZE = 8 * 1024 # 1 MB
-    data = b''
-    while True:
-        part = sock.recv(BUFF_SIZE)
-        data += part
-        if len(part) < BUFF_SIZE:
-            # either 0 or end of data
-            break
-        cnt += 1
-        print('Received: ', len(data), 'bytes: ', cnt)
-    return data
+from python.ipc.server import MSGLEN
+
+MSGLEN = 1024 * 1024
+
+def myreceive(sock):
+    chunks = []
+    bytes_recd = 0
+    while bytes_recd < MSGLEN:
+        chunk = sock.recv(min(MSGLEN - bytes_recd, 2048))
+        if chunk == b'':
+            raise RuntimeError("socket connection broken")
+        chunks.append(chunk)
+        bytes_recd = bytes_recd + len(chunk)
+    return b''.join(chunks)
 
 if __name__ == "__main__":
     host = str(sys.argv[1])
@@ -31,7 +32,7 @@ if __name__ == "__main__":
             s.connect((host, port))
             st = time.time()
             while True:
-                data = recvall(s)
+                data = myreceive(s)
                 if not data:
                     break
                 else:
