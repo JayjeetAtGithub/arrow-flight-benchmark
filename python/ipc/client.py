@@ -8,7 +8,7 @@ import pyarrow.parquet as pq
 import socket
 
 def recvall(sock):
-    BUFF_SIZE = 16 * 1024 # 1 MB
+    BUFF_SIZE = 8 * 1024 # 1 MB
     data = b''
     while True:
         part = sock.recv(BUFF_SIZE)
