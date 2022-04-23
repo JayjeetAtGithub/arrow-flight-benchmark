@@ -16,6 +16,7 @@ def recvall(sock):
         if len(part) < BUFF_SIZE:
             # either 0 or end of data
             break
+        print('Received: ', len(data))
     return data
 
 if __name__ == "__main__":
