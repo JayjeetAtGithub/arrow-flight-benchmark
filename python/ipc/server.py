@@ -35,5 +35,8 @@ if __name__ == '__main__':
                 buf = sink.getvalue()
                 print(buf.size)
                 mysend(buf.hex(), conn)
-                
-    print("Done sending batches")
+                with pa.ipc.RecordBatchFileReader(buf.hex()) as reader:
+                    batch = reader.get_batch(0)
+                    print(f"Batch size: {batch.num_rows}") 
+   
+   print("Done sending batches")
