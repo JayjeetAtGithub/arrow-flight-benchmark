@@ -25,6 +25,6 @@ if __name__ == '__main__':
                 sink.close()
                 buf = sink.getvalue()
                 print(buf.size)
-                conn.sendall(buf.hex())
+                conn.sendall(buf.to_pybytes())
                 
     print("Done sending batches")
