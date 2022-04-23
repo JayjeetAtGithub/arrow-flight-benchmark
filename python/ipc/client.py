@@ -30,7 +30,7 @@ if __name__ == "__main__":
             s.connect((host, port))
             st = time.time()
             while True:
-                data = recvall(s)
+                data = myreceive(s)
                 if not data:
                     break
                 else:
