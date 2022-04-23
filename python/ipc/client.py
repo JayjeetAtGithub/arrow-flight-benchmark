@@ -39,7 +39,7 @@ if __name__ == "__main__":
                 if not data:
                     break
                 else:
-                    with pa.ipc.RecordBatchStreamReader(data) as reader:
+                    with pa.ipc.RecordBatchFileReader(data) as reader:
                         batch = reader.read_next_batch()
                         print(f"Batch size: {batch.num_rows}")
 
