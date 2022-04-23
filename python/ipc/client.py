@@ -7,7 +7,7 @@ import pyarrow.parquet as pq
 
 import socket
 
-MSGLEN = 1024 * 1024
+MSGLEN = 106404536
 
 def myreceive(sock):
     chunks = []
@@ -15,7 +15,7 @@ def myreceive(sock):
     cnt = 0
     while bytes_recd < MSGLEN:
         print("Receiving...", cnt)
-        chunk = sock.recv(min(MSGLEN - bytes_recd, 2048))
+        chunk = sock.recv(min(MSGLEN - bytes_recd, 1024 * 1024))
         if chunk == b'':
             raise RuntimeError("socket connection broken")
         chunks.append(chunk)

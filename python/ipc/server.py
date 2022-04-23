@@ -3,7 +3,7 @@ import socket
 import pyarrow as pa
 import pyarrow.dataset as ds
 
-MSGLEN = 1024 * 1024
+MSGLEN = 106404536
 
 def mysend(msg, sock):
     totalsent = 0
