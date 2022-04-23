@@ -35,6 +35,7 @@ if __name__ == "__main__":
             st = time.time()
             while True:
                 data = myreceive(s)
+                print(len(data))
                 if not data:
                     break
                 else:
