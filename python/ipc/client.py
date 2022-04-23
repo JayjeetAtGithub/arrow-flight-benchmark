@@ -17,7 +17,7 @@ if __name__ == "__main__":
             s.connect((host, port))
             st = time.time()
             while True:
-                data = s.recv(106404536)
+                data = s.recvall(106404536)
                 if not data:
                     break
                 else:
