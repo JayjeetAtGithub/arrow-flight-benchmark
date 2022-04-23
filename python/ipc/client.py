@@ -40,7 +40,7 @@ if __name__ == "__main__":
                     break
                 else:
                     with pa.ipc.RecordBatchFileReader(data.decode()) as reader:
-                        batch = reader.read_next_batch()
+                        batch = reader.get_batch(0)
                         print(f"Batch size: {batch.num_rows}")
 
             et = time.time()
