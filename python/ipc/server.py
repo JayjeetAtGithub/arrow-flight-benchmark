@@ -23,6 +23,7 @@ if __name__ == '__main__':
                 with pa.ipc.new_stream(sink, batch.schema) as writer:
                     writer.write_batch(batch)
                 sink.close()
+                print(sink.size())
                 conn.sendall(sink.getvalue().hex())
                 
     print("Done sending batches")
