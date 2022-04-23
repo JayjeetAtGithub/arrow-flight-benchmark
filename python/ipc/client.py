@@ -12,13 +12,15 @@ MSGLEN = 1024 * 1024
 def myreceive(sock):
     chunks = []
     bytes_recd = 0
+    cnt = 0
     while bytes_recd < MSGLEN:
-        print("Receiving...")
+        print("Receiving...", cnt)
         chunk = sock.recv(min(MSGLEN - bytes_recd, 2048))
         if chunk == b'':
             raise RuntimeError("socket connection broken")
         chunks.append(chunk)
         bytes_recd = bytes_recd + len(chunk)
+        cnt += 1
     return b''.join(chunks)
 
 if __name__ == "__main__":
