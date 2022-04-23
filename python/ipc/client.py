@@ -8,6 +8,7 @@ import pyarrow.parquet as pq
 import socket
 
 def recvall(sock):
+    cnt = 0
     BUFF_SIZE = 8 * 1024 # 1 MB
     data = b''
     while True:
@@ -16,7 +17,8 @@ def recvall(sock):
         if len(part) < BUFF_SIZE:
             # either 0 or end of data
             break
-        print('Received: ', len(data))
+        cnt += 1
+        print('Received: ', len(data), 'bytes: ', cnt)
     return data
 
 if __name__ == "__main__":
