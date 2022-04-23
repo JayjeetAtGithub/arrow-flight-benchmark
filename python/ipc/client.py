@@ -7,8 +7,6 @@ import pyarrow.parquet as pq
 
 import socket
 
-from python.ipc.server import MSGLEN
-
 MSGLEN = 1024 * 1024
 
 def myreceive(sock):
