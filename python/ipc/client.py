@@ -19,6 +19,7 @@ def myreceive(sock):
         if chunk == b'':
             raise RuntimeError("socket connection broken")
         chunks.append(chunk)
+        print(len(chunk))
         bytes_recd = bytes_recd + len(chunk)
         cnt += 1
     return b''.join(chunks)
