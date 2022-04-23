@@ -20,7 +20,7 @@ if __name__ == '__main__':
             reader = ds.Scanner.from_dataset(dataset_, use_threads=False).to_reader()
             for batch in reader:
                 sink = pa.BufferOutputStream()
-                with pa.RecordBatchStreamWriter(sink, batch.schema) as writer:
+                with pa.ipc.RecordBatchStreamWriter(sink, batch.schema) as writer:
                     writer.write_batch(batch)
                     writer.close()
                 buf = sink.getvalue()
