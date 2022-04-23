@@ -7,6 +7,17 @@ import pyarrow.parquet as pq
 
 import socket
 
+def recvall(sock):
+    BUFF_SIZE = 4096 # 4 KiB
+    data = b''
+    while True:
+        part = sock.recv(BUFF_SIZE)
+        data += part
+        if len(part) < BUFF_SIZE:
+            # either 0 or end of data
+            break
+    return data
+
 if __name__ == "__main__":
     host = str(sys.argv[1])
     port = int(sys.argv[2])
@@ -17,7 +28,7 @@ if __name__ == "__main__":
             s.connect((host, port))
             st = time.time()
             while True:
-                data = s.recvall(106404536)
+                data = recvall(s)
                 if not data:
                     break
                 else:
