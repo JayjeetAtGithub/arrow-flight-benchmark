@@ -13,6 +13,7 @@ def myreceive(sock):
     chunks = []
     bytes_recd = 0
     while bytes_recd < MSGLEN:
+        print("Receiving...")
         chunk = sock.recv(min(MSGLEN - bytes_recd, 2048))
         if chunk == b'':
             raise RuntimeError("socket connection broken")
